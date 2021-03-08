@@ -1,0 +1,7 @@
+export const BaseURL = "https://artistic3.herokuapp.com/"
+//  export const BaseURL = "http://localhost:9999/"
+ export const ParentCategory = BaseURL + "api/parentCategory"
+ export const ChildCategory = BaseURL + "api/childCategory"
+ export const Image = BaseURL + "api/image/upload"
+ export const Get_Image = BaseURL + "api/image"
+ export const Update_Image = BaseURL + "api/image/update"
