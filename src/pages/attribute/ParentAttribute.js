@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { DataGrid } from "@material-ui/data-grid";
+import TextField from "@material-ui/core/TextField";
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
 import { Container, Row, Col } from "react-bootstrap";
@@ -9,17 +10,22 @@ import {
   editParentCategory,
   getParentCategory,
   deleteParentCategory,
+  getParentAttribute,
+  deleteParentAttribute,
+  editParentAttribute,
+  addParentAttribute,
 } from "../../utility/httpService";
 import swal from "sweetalert";
+import { reloadSetTime } from "../../utility/Service";
 
-const ParentCategory = () => {
+const ParentAttribute = () => {
   const [title, setTitle] = useState("Add Parent Category");
   const [isEdit, setIdEdit] = useState(false);
 
   const [row, setRow] = useState([]);
   const [data, setData] = useState({
     id: "",
-    categoryName: "",
+    title: "",
     active: true,
   });
 
@@ -27,14 +33,13 @@ const ParentCategory = () => {
     setData({ ...data, active: !data.active });
   };
   const onChange = (e) => {
-    setData({ ...data, categoryName: e.target.value });
+    setData({ ...data, title: e.target.value });
   };
 
   const [colomn, setColomn] = useState([
-    { field: "sNo", headerName: "S#", width: 70 },
-
-    { field: "categoryName", headerName: "Parent Category", width: 200 },
-    { field: "active", headerName: "Active", width: 130 },
+    { field: "sNo", headerName: "S#", width: 300 },
+    { field: "title", headerName: "Parent Attribute", width: 300 },
+    { field: "active", headerName: "Active", width: 300 },
     {
       field: "",
       headerName: "Actions",
@@ -65,93 +70,86 @@ const ParentCategory = () => {
   ]);
 
   useEffect(() => {
-    getParentCategory().then((res) => {
-      if (res.data.statusCode == 1) {
-        let array = res.data.data.map((m, i) => {
-          let obj = {
-            ...m,
-            sNo: i + 1,
-          };
-          return obj;
-        });
-
-     
-        setRow(array);
+    getParentAttribute().then((res) => {
+      console.log(res.data);
+      if (res.data) {
+        if (res.data.statusCode == 1) {
+          let array = res.data.data.map((m, i) => {
+            let obj = {
+              ...m,
+              active: m.active ? m.active : false,
+              sNo: i + 1,
+            };
+            return obj;
+          });
+          console.log(array);
+          setRow(array);
+        }
       }
-
-    });
+    }).catch(e => console.log(e))
   }, []);
 
   const onClickEdit = (value) => {
     setIdEdit(true);
-    setTitle("Edit Parent category");
+    setTitle("Edit Parent attribute");
 
     setData({
       id: value.id,
-      categoryName: value.categoryName,
+      title: value.title,
       active: value.active,
     });
   };
-  const onClickRemove = (value) => {
-    deleteParentCategory(value.id).then((res) => {
-      if (res && res.status == 200) {
-        swal({
-          title: "Remove successfully!",
-          timer: 2000,
-          icon: "success",
-        });
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
-        // setRow(filterArray);
-      } else {
-        swal({
-          title: "Cannot be deleted!",
-          timer: 3000,
-          icon: "error",
-        });
-      }
-    });
+  const onClickRemove = async (value) => {
+    const data = await deleteParentAttribute(value.id);
+
+    if (data && data.data.statusCode == 1) {
+      swal({
+        title: "Remove successfully!",
+        timer: 2000,
+        icon: "success",
+      });
+      reloadSetTime(2.2);
+    } else {
+      swal({
+        title: "Cannot be deleted!",
+        timer: 3000,
+        icon: "error",
+      });
+    }
   };
 
-  const addCategory = () => {
+  const addAttribute = () => {
     if (isEdit) {
-      editParentCategory(data.id, data).then((res) => {
-        if (res.status == 200) {
-          let array = row.map((r) => {
-            let obj = {};
-            if (r.id == data.id) {
-              obj = {
-                ...r,
-                categoryName: data.categoryName,
-                active: data.active,
-              };
-              return obj;
-            } else {
-              return r;
-            }
-          });
-
+      editParentAttribute(data.id, data).then((res) => {
+        console.log();
+        if (res && res.data.statusCode == 1) {
           swal({
             title: "Edit successfully!",
             timer: 3000,
             icon: "success",
           });
-          window.location.reload();
+          reloadSetTime(2);
+        }else{
+            swal({
+                title: res.data.message,
+                timer: 3000,
+                icon: "success",
+              }); 
         }
-      });
+      }).catch(e => console.log(e))
     } else {
-      addParentCategory(data).then((res) => {
-        if (res.status == 200) {
+      addParentAttribute(data).then((res) => {
+        console.log("add: ", res.data);
+        if (res.data.statusCode == 1) {
           swal({
             title: "Add successfully!",
             timer: 3000,
             icon: "success",
           });
 
-          window.location.reload();
+          reloadSetTime(2);
         }
-      });
+      }).catch(e => console.log(e))
     }
   };
   return (
@@ -162,7 +160,7 @@ const ParentCategory = () => {
             id="standard-basic"
             label="Parent category"
             onChange={onChange}
-            value={data.categoryName}
+            value={data.title}
             name="categoryName"
           />
           <Checkbox
@@ -173,16 +171,23 @@ const ParentCategory = () => {
           />
         </Col>
         <Col lg={6} md={6} sm={12} xs={12}>
-          <Button variant="contained" color="primary" onClick={addCategory}>
-            {isEdit ? "Edit Parent Category" : "Add Parent Category"}
+          <Button variant="contained" color="primary" onClick={addAttribute}>
+            {isEdit ? "Edit Parent Attribute" : "Add Parent Attribute"}
           </Button>
         </Col>
       </Row>
 
-      <div style={{ height: 500, width: "100%", background: "white" }}>
+      <div
+        style={{
+          height: 500,
+          width: "100%",
+          background: "white",
+          overflowX: "scroll",
+        }}
+      >
         <DataGrid rows={row} columns={colomn} pageSize={10} />
       </div>
     </Container>
   );
 };
-export default ParentCategory;
+export default ParentAttribute;

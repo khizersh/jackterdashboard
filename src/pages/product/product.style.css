@@ -1,0 +1,15 @@
+thead tr , tbody tr {
+    text-align: center;
+}
+
+.modal-content{
+    top: 100px !important;
+}
+
+.visible{
+    visibility: visible;
+}
+
+.hidden{
+    visibility: hidden;
+}

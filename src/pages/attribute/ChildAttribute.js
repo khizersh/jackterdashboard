@@ -5,38 +5,31 @@ import TextField from "@material-ui/core/TextField";
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
 import {
-  deleteChildCategory,
-  getParentCategory,
-  getChildCategory,
-  addChildCategory,
-  editChildCategory,
+  getChildAttribute,
+  deleteChildAttribute,
+  editChildAttribute,
   getParentAttribute,
+  addChildAttribute,
 } from "../../utility/httpService";
 import { DataGrid } from "@material-ui/data-grid";
 import swal from "sweetalert";
 import { Input } from "reactstrap";
-import Select from "react-select";
+import { reloadSetTime } from "../../utility/Service";
 
-const ChildCategory = () => {
+const ChildAttribute = () => {
   const [row, setRow] = useState([]);
-  const [parentCateory, setParentCateory] = useState([]);
-
+  const [parentAttribute, setParentAttribute] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
-  const [parentAttributeEdit, setParentAttributeEdit] = useState([]);
-
   const [data, setData] = useState({
     id: null,
     parentId: null,
-    categoryName: "",
-    active: true,
-    attributeList: [],
+    title: "",
   });
 
   const [colomn, setColomn] = useState([
     { field: "sNo", headerName: "S#", width: 70 },
-    { field: "categoryName", headerName: "Category", width: 200 },
-    { field: "parentCategory", headerName: "Parent Category", width: 200 },
-    { field: "active", headerName: "Active", width: 130 },
+    { field: "title", headerName: "Attribute", width: 200 },
+    { field: "parentName", headerName: "Parent Attribute", width: 200 },
     {
       field: "",
       headerName: "Actions",
@@ -67,24 +60,21 @@ const ChildCategory = () => {
   ]);
 
   const onChange = (e) => {
-    setData({ ...data, categoryName: e.target.value });
+    setData({ ...data, title: e.target.value });
   };
 
-  const handleChange = (event) => {
-    setData({ ...data, active: !data.active });
-  };
   const onClickEdit = (value) => {
-    let obj = [];
+    console.log("value: ", value);
     setData({
       id: value.id,
-      categoryName: value.categoryName,
-      parentId: data.parentId,
-      active: value.active,
+      title: value.title,
+      parentId: value.parentId,
     });
     setIsEdit(true);
   };
+
   const onClickRemove = (value) => {
-    deleteChildCategory(value.id).then((res) => {
+    deleteChildAttribute(value.id).then((res) => {
       if (res.status == 200) {
         swal({ title: "Remove succesfully!", timer: 2500, icon: "success" });
         setTimeout(() => {
@@ -98,123 +88,100 @@ const ChildCategory = () => {
     setData({ ...data, parentId: e.target.value });
   };
 
-  const addCategory = () => {
-    if (!data.categoryName) {
+  const onClick = () => {
+    if (!data.title) {
       return swal({
-        title: "Category name is missing!",
+        title: "Attribute name is missing!",
         icon: "error",
         timer: 3000,
       });
     }
-
-    if (isEdit) {
-      editChildCategory(data.id, data).then((res) => {
-        if (res && res.data && res.data.statusCodeValue == 1) {
-          swal({
-            title: "Edit Successfully!",
-            icon: "success",
-            timer: 3000,
-          });
-          setTimeout(() => {
-            window.location.reload();
-          }, 3000);
-        }
-      });
-    } else {
-      if (!data.parentId) {
+    if (!data.parentId) {
         return swal({
-          title: "Select parent category!",
+          title: "Select parent attribute!",
           icon: "error",
           timer: 3000,
         });
       }
-      addChildCategory(data).then((res) => {
+    if (isEdit) {
+      editChildAttribute(data.id, data).then((res) => {
+        if (res && res.data && res.data.statusCodeValue == 1) {
+          swal({
+            title: "Edit Successfully!",
+            icon: "success",
+            timer: 2000,
+          });
+          reloadSetTime(2);
+        } 
+      });
+    } else {
+      addChildAttribute(data).then((res) => {
         if (res.status == 200) {
-          console.log("res: ", res);
-
+   
           swal({ title: "Add successfully!", icon: "success", timer: 3000 });
-          setTimeout(() => {
-            window.location.reload();
-          }, 3000);
+          reloadSetTime(3);
         }
       });
     }
   };
 
-
-
   useEffect(() => {
-    getChildCategory()
-      .then((res) => {
-        if (res.data.statusCode == 1) {
-      
-          let array = res.data.data.map((m, i) => {
-            let obj = {
-              id: m.id,
-              categoryName: m.title,
-              parentCategory: m.parentCategoryTitle
-                ? m.parentCategoryTitle
-                : "Not Found",
-              active: m.active,
-              sNo: i + 1,
-            };
-            return obj;
-          });
-          setRow(array);
-        }
-      })
-      .catch((e) => console.log(e));
+    getChildAttribute().then((res) => {
+      if (res.data.statusCode == 1) {
+       
+        let array = res.data.data.map((m, i) => {
+          let obj = {
+            sNo: i + 1,
+            id: m.id,
+            title: m.title,
+            parentName: m.parentAttributes
+              ? m.parentAttributes.title
+              : "Not Found",
+            parentId: m.parentAttributes ? m.parentAttributes.id : null,
+          };
+          return obj;
+        });
+        setRow(array);
+      }
+    });
 
-    getParentCategory()
-      .then((res) => {
-        if (res.data.statusCode == 1) {
-          setParentCateory(res.data.data);
-        }
-      })
-      .catch((e) => console.log(e));
-
-   
+    getParentAttribute().then((res) => {
+      if (res.data.statusCode == 1) {
+        setParentAttribute(res.data.data);
+      }
+    });
   }, []);
   return (
-    <Container className="card" fluid>
+    <Container className="card pt-2" fluid>
       <Row>
-        <Col lg={6} md={6} sm={12}>
-          <label>Enter title</label>
+        <Col lg={3}>
+          <label>Select parent attribute</label>
           <Input
             id="standard-basic"
             label="Enter title"
             onChange={onChange}
-            value={data.categoryName}
+            value={data.title}
             name="categoryName"
           />
         </Col>
-        <Col lg={6} md={6} sm={12}>
+        <Col lg={3}>
           <Form.Group controlId="exampleForm.ControlSelect1">
-            <Form.Label>Select parent category</Form.Label>
+            <Form.Label>Select parent attribute</Form.Label>
             <Form.Control as="select" onChange={handleChangeSelect}>
               <option value="">Select</option>
-              {parentCateory.length
-                ? parentCateory.map((m, i) => (
+              {parentAttribute.length
+                ? parentAttribute.map((m, i) => (
                     <option key={i} value={m.id}>
-                      {m.categoryName}
+                      {m.title}
                     </option>
                   ))
                 : ""}
             </Form.Control>
           </Form.Group>
         </Col>
-      
-        <Col lg={1}>
-          <Form.Label>Enable</Form.Label>
-          <Checkbox
-            checked={data.active}
-            onChange={handleChange}
-            inputProps={{ "aria-label": "primary checkbox" }}
-          />
-        </Col>
         <Col lg={4} className="m-auto">
-          <Button variant="contained" color="primary" onClick={addCategory}>
-            {isEdit ? "Edit Category" : "Add Category"}
+          <Button variant="contained" color="primary" onClick={onClick}>
+            {isEdit ? "Edit Attribute" : "Add Attribute"}
           </Button>
         </Col>
       </Row>
@@ -227,4 +194,4 @@ const ChildCategory = () => {
   );
 };
 
-export default ChildCategory;
+export default ChildAttribute;

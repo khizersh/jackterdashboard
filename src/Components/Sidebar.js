@@ -18,6 +18,10 @@ import ListItemText from "@material-ui/core/ListItemText";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MailIcon from "@material-ui/icons/Mail";
 import { Link } from "react-router-dom";
+import Collapse from "@material-ui/core/Collapse";
+import ExpandLess from "@material-ui/icons/ExpandLess";
+import ExpandMore from "@material-ui/icons/ExpandMore";
+import StarBorder from "@material-ui/icons/StarBorder";
 
 const drawerWidth = 240;
 
@@ -81,12 +85,19 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     padding: theme.spacing(3),
   },
+  nested: {
+    paddingLeft: theme.spacing(4),
+  },
 }));
 
 export default function MiniDrawer({ children }) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [attribute, setAttribute] = React.useState(false);
+  const [category, setCategory] = React.useState(false);
+  const [product, setProduct] = React.useState(false);
+  const [section, setSection] = React.useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -95,12 +106,101 @@ export default function MiniDrawer({ children }) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+  const handleClickAttribute = () => {
+    setAttribute(!attribute);
+  };
+  const handleClickCategory = () => {
+    setCategory(!category);
+  };
+  const handleClickProduct = () => {
+    setProduct(!product);
+  };
+  const handleClickSection = () => {
+    setSection(!section);
+  };
 
   const links = [
     { name: "Dashboard", path: "/", icon: <InboxIcon /> },
-    { name: "Parent Category", path: "/parent", icon: <MailIcon /> },
-    { name: "Child Category", path: "/child", icon: <InboxIcon /> },
-    { name: "Images", path: "/image", icon: <MailIcon /> },
+    {
+      name: "Attribute",
+      path: "/image",
+      icon: <MailIcon />,
+      onClick: handleClickAttribute,
+      nested: true,
+      open: attribute,
+      child: [
+        {
+          name: "ParentAttribute",
+          path: "/parent-attribute",
+          icon: <MailIcon />,
+        },
+        {
+          name: "ChildAttribute",
+          path: "/child-attribute",
+          icon: <MailIcon />,
+        },
+      ],
+    },
+    {
+      name: "Category",
+      path: "/image",
+      icon: <MailIcon />,
+      onClick: handleClickCategory,
+      nested: true,
+      open: category,
+      child: [
+        {
+          name: "Parent Category",
+          path: "/parent",
+          icon: <MailIcon />,
+        },
+        {
+          name: "Child Category",
+          path: "/child",
+          icon: <MailIcon />,
+        },
+      ],
+    },
+    {
+      name: "Product",
+      path: "/image",
+      icon: <MailIcon />,
+      onClick: handleClickProduct,
+      nested: true,
+      open: product,
+      child: [
+        {
+          name: "Product view",
+          path: "/products",
+          icon: <MailIcon />,
+        },
+        {
+          name: "Product add",
+          path: "/product-form",
+          icon: <MailIcon />,
+        },
+      ],
+    },
+    {
+      name: "Product Section",
+      path: "/image",
+      icon: <MailIcon />,
+      onClick: handleClickSection,
+      nested: true,
+      open: section,
+      child: [
+        {
+          name: "Section view",
+          path: "/product-section",
+          icon: <MailIcon />,
+        },
+        {
+          name: "Section add",
+          path: "/section-add",
+          icon: <MailIcon />,
+        },
+      ],
+    },
   ];
 
   return (
@@ -153,16 +253,42 @@ export default function MiniDrawer({ children }) {
         </div>
         <Divider />
         <List>
-          {links.map((m, index) => (
-            <Link to={m.path} key={index} style={{textDecoration:"none"}}>
-              <ListItem button key={index}>
-                <ListItemIcon>
-                  {m.icon}
-                </ListItemIcon>
-                <ListItemText primary={m.name} />
-              </ListItem>
-            </Link>
-          ))}
+          {links.map((m, index) =>
+            m.nested ? (
+              <>
+                <ListItem button onClick={m.onClick}>
+                  <ListItemIcon>
+                    <InboxIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={m.name} />
+                  {m.open ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+                <Collapse in={m.open} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    {m.child.length
+                      ? m.child.map((child, i) => (
+                        <Link to={child.path} key={i} style={{ textDecoration: "none" }}>
+                          <ListItem key={i} button className={classes.nested}>
+                            <ListItemIcon>
+                              <StarBorder />
+                            </ListItemIcon>
+                            <ListItemText primary={child.name} />
+                          </ListItem>
+                          </Link>
+                        ))
+                      : null}
+                  </List>
+                </Collapse>
+              </>
+            ) : (
+              <Link to={m.path} key={index} style={{ textDecoration: "none" }}>
+                <ListItem button key={index}>
+                  <ListItemIcon>{m.icon}</ListItemIcon>
+                  <ListItemText primary={m.name} />
+                </ListItem>
+              </Link>
+            )
+          )}
         </List>
         <Divider />
       </Drawer>
