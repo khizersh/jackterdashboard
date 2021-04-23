@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Input, Button } from "reactstrap";
+import { Row, Col, Input, Button } from "reactstrap";
 import { DropzoneArea } from "material-ui-dropzone";
 import {
   addProduct,
@@ -53,16 +53,19 @@ const ProductForm = () => {
   const onSubmit = () => {
     let finalAttribute = [];
     if (selectedAttribute.length && selectedMultipleAttribute.length) {
+      console.log("both");
       let attributes = selectedAttribute;
       selectedMultipleAttribute.map((m) => attributes.push(m));
       finalAttribute = attributes;
     } else if (selectedAttribute.length && !selectedMultipleAttribute.length) {
+      console.log("selectedAttribute");
       finalAttribute = selectedAttribute;
     } else {
+      console.log("selectedMultipleAttribute");
       finalAttribute = selectedMultipleAttribute;
     }
     setSelectedAttribute(finalAttribute);
-
+    console.log("finalAttribute: ", finalAttribute);
     if (!imageList.length) {
       return swal({
         title: "Please select images!",
@@ -78,7 +81,7 @@ const ProductForm = () => {
       });
     }
 
-    let customData = { ...data, attributeList: selectedAttribute };
+    let customData = { ...data, attributeList: finalAttribute };
     console.log("customData: ", customData);
     var formData = new FormData();
     formData.append("productString", JSON.stringify(customData));
@@ -154,18 +157,16 @@ const ProductForm = () => {
 
       getChildAttributeByParentId(attribute.value.id)
         .then((res) => {
-          console.log("res: ",res);
           if (res.data && res.data.statusCode == 1) {
-            let array = res.data.data.map((m) => {
-
-              let val  = {...m , parentId : attribute.value.id}
+            let array = [];
+            array = res.data.data.map((m) => {
+              let val = { ...m, parentId: attribute.value.id };
               return {
                 value: val,
                 label: m.title,
               };
             });
             let temp = childAttribute;
-            console.log("temp: ",temp);
             setChildAttribute([...temp, array]);
           }
         })
@@ -183,7 +184,7 @@ const ProductForm = () => {
         .then((res) => {
           if (res.data && res.data.statusCode == 1) {
             let array = res.data.data.map((m) => {
-              let val  = {...m , parentId : attribute.value.id}
+              let val = { ...m, parentId: attribute.value.id };
               return {
                 value: val,
                 label: m.title,
@@ -197,68 +198,92 @@ const ProductForm = () => {
   };
 
   // child attribute
-  const onChangeChildAttribute = (e) => {
-    let finalArray = [];
-    if (e.length) {
-      console.log("e: ",e);
-      console.log("parentAttributeEdit: ", parentAttributeEdit);
-      parentAttributeEdit.map((m) => {
-        let obj = {};
-        let array = e.filter((f) => m.value.id == f.value.parentId);
-  
-        let customArray = array.map((n) => {
-          return {
-            childAttributeId: n.value.id,
-          };
+  const onChangeChildAttribute = (select) => {
+    let bigArray = selectedAttribute;
+    if (select.length) {
+      let lastChild = select[select.length - 1];
+      let changeParent = parentAttributeEdit.filter(
+        (f) => lastChild.value.parentId == f.value.id
+      )[0];
+      if (selectedAttribute.length == 0) {
+        bigArray.push({
+          parentAttributeId: changeParent.value.id,
+          subAttributeList: [{ childAttributeId: lastChild.value.id }],
         });
-        obj = {
-          parentAttributeId: m.value.id,
-          subAttributeList: customArray,
-        };
-        finalArray.push(obj);
-      });
+      } else {
+        selectedAttribute.map((m, i) => {
+          if (m.parentAttributeId == lastChild.value.parentId) {
+            bigArray[i].subAttributeList.push({
+              childAttributeId: lastChild.value.id,
+            });
+          } else {
+            if (selectedAttribute.length == 1) {
+              bigArray.push({
+                parentAttributeId: changeParent.value.id,
+                subAttributeList: [{ childAttributeId: lastChild.value.id }],
+              });
+            }
+          }
+        });
+      }
+      setSelectedAttribute(bigArray);
     }
-    console.log("finalArray single: ", finalArray);
-    setSelectedAttribute(finalArray);
   };
 
   // multi child attribute
-  const onChangeMultipleChildAttribute = (e) => {
-    let att = e[e.length - 1];
+  const onChangeMultipleChildAttribute = (select) => {
+  
+    let lastChild = select[select.length - 1];
+    let changeParent = parentMultipleAttributeEdit.filter(
+      (f) => lastChild.value.parentId == f.value.id
+    )[0];
+
+
     let ob = {
-      attributeId: att.value.id,
-      attributeName: att.label,
+      attributeId: lastChild.value.id,
+      attributeName: lastChild.label,
       imageList: [],
     };
 
-    let array = attributeImage;
+    let array = [];
+    attributeImage.map(m => {
+      array.push(m)
+    })
     array.push(ob);
     setAttributeImage(array);
 
-    let finalArray = [];
-    if (e.length) {
-      parentMultipleAttributeEdit.map((m) => {
-        let obj = {};
-        let array = e.filter((f) => m.value.id == f.value.parentId);
-        let customArray = array.map((n) => {
-          return {
-            childAttributeId: n.value.id,
-          };
-        });
-        obj = {
-          parentAttributeId: m.value.id,
+    let bigArray = [];
+    bigArray = selectedMultipleAttribute;
+    if (select.length) {
+  
+      if (selectedMultipleAttribute.length == 0) {
+        bigArray.push({
+          parentAttributeId: changeParent.value.id,
           multiImage: true,
-          subAttributeList: customArray,
-        };
-        finalArray.push(obj);
-      });
+          subAttributeList: [{ childAttributeId: lastChild.value.id }],
+        });
+      } else {
+        selectedMultipleAttribute.map((m, i) => {
+          if (m.parentAttributeId == lastChild.value.parentId) {
+            bigArray[i].subAttributeList.push({
+              childAttributeId: lastChild.value.id,
+            });
+          } else {
+            if (selectedMultipleAttribute.length == 1) {
+              bigArray.push({
+                parentAttributeId: changeParent.value.id,
+                multiImage: true,
+                subAttributeList: [{ childAttributeId: lastChild.value.id }],
+              });
+            }
+          }
+        });
+      }
     }
 
-    console.log("finalArray multi: ", finalArray);
-    setSelectedMultipleAttribute(finalArray);
-    // let array1 = selectedAttribute;
-    //  finalArray.map(m => array1.push(m))
-    // setSelectedAttribute(array1);
+    console.log("finalArray multi: ", bigArray);
+    setSelectedMultipleAttribute(bigArray);
+  
   };
 
   const onClickMultiple = () => {
@@ -378,7 +403,7 @@ const ProductForm = () => {
                     <Select
                       options={m}
                       isMulti
-                      onChange={() => onChangeChildAttribute(m)}
+                      onChange={onChangeChildAttribute}
                       closeMenuOnSelect={false}
                     />
                   </Col>
@@ -403,7 +428,7 @@ const ProductForm = () => {
                 isMulti
                 onChange={onChangeMultiAttribute}
                 closeMenuOnSelect={false}
-                value={parentMultipleAttributeEdit}
+                // value={parentMultipleAttributeEdit}
               />
             </Col>
             <Col md={12} sm={12}>

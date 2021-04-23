@@ -54,8 +54,8 @@ export const addChildCategory = async (data) => {
 export const deleteChildCategory = async (id) => {
   return await deletee(ChildCategory, id);
 };
-export const editChildCategory = async (id, body) => {
-  return await edit(ChildCategory, id, body);
+export const editChildCategory = async ( body) => {
+  return await post(ChildCategory + "/update",  body);
 };
 
 // image

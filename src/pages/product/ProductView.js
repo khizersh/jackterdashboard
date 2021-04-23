@@ -31,7 +31,7 @@ const ProductView = () => {
       headerName: "Image",
       width: 130,
       renderCell: (params) => (
-        <img src={params.value} alt="art image" width="60" />
+        <img src={params.value} alt="art image" width="45" />
       ),
     },
     {
@@ -106,7 +106,6 @@ const ProductView = () => {
     getProducts()
       .then((res) => {
         if (res.data.statusCode == 1) {
-          console.log("res: ",res);
           let array = res.data.data.map((m, i) => {
             return {
               sNo: ++i,

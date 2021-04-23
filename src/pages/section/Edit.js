@@ -74,7 +74,6 @@ const Edit = () => {
 
   const changePosiotion = (seq) => {
     setIsPos(true);
-    console.log("seq: ", seq);
     setPosition({ id: seq.id, from: seq.sequence });
   };
 
