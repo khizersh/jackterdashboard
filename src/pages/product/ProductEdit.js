@@ -80,7 +80,7 @@ const ProductEdit = () => {
             let array = res.data.data.imageList.map((m) => {
               return {
                 ...m,
-                image: "data:" + m.type + ";base64," + m.picByte,
+                image:  m.image,
               };
             });
             setImages(array);

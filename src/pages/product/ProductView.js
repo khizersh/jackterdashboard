@@ -111,14 +111,9 @@ const ProductView = () => {
               sNo: ++i,
               ...m,
               priceSet: m.priceSet ? m.priceSet : false,
-              image:
-                "data:" +
-                m.imageList[0].type +
-                ";base64," +
-                m.imageList[0].picByte,
+              image:m.imageList[0].image,
             };
           });
-          console.log("arrayl; ", array);
           setRow(array);
         }
       })
@@ -136,7 +131,12 @@ const ProductView = () => {
         </Col>
       </Row>
       <div style={{ height: 500, width: "100%", background: "white" }}>
-        <DataGrid rows={row} columns={colomn} pageSize={10} rowsPerPageOptions={[10,25,50,100,250]} />
+        <DataGrid
+          rows={row}
+          columns={colomn}
+          pageSize={10}
+          rowsPerPageOptions={[10, 25, 50, 100, 250]}
+        />
       </div>
     </Container>
   );

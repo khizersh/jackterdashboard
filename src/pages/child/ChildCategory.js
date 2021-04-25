@@ -192,12 +192,8 @@ const ChildCategory = () => {
                 : "Not Found",
               active: m.active,
               sNo: i + 1,
-              image:
-                m.image &&
-                "data:" + m.image.type + ";base64," + m.image.picByte,
-              banner:
-                m.banner &&
-                "data:" + m.banner.type + ";base64," + m.banner.picByte,
+              image: m.image,
+              banner: m.banner,
             };
             return obj;
           });
