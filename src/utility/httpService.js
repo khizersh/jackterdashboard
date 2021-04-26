@@ -18,6 +18,7 @@ import {
   AttributeImage,
   ProductSection,
   ProductSectionItem,
+  HomeBanner,
 } from "./apiLinks";
 
 // parent cat
@@ -175,6 +176,27 @@ export const addSectionItemWithList = async (body) => {
 export const changeItemPosition = async (body) => {
   return await post(ProductSectionItem + "/" + "position", body);
 };
+
+
+
+// home page banner
+
+export const getBanners = async () => {
+  return await get(HomeBanner);
+};
+export const addBanner = async (body) => {
+  return await post(HomeBanner , body);
+};
+export const editBanner = async (body) => {
+  return await post(HomeBanner + "/" + "edit", body);
+};
+export const deleteBanner = async (id) => {
+  return await deletee(HomeBanner ,  id);
+};
+
+
+
+
 
 
 

@@ -98,6 +98,7 @@ export default function MiniDrawer({ children }) {
   const [category, setCategory] = React.useState(false);
   const [product, setProduct] = React.useState(false);
   const [section, setSection] = React.useState(false);
+  const [banner, setBanner] = React.useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -117,6 +118,9 @@ export default function MiniDrawer({ children }) {
   };
   const handleClickSection = () => {
     setSection(!section);
+  };
+  const handleBanner = () => {
+    setBanner(!banner);
   };
 
   const links = [
@@ -199,6 +203,22 @@ export default function MiniDrawer({ children }) {
           path: "/section-add",
           icon: <MailIcon />,
         },
+      ],
+    },
+    {
+      name: "Home Banner",
+      path: "/banner",
+      icon: <MailIcon />,
+      onClick: handleBanner,
+      nested: true,
+      open: banner,
+      child: [
+        {
+          name: "Banner View",
+          path: "/banner",
+          icon: <MailIcon />,
+        },
+       
       ],
     },
   ];

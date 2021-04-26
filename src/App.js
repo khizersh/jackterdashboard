@@ -20,6 +20,7 @@ import ProductSection from "./pages/section/ProductSection";
 import SectionEdit from "./pages/section/Edit";
 import SectionAdd from "./pages/section/Add";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Banner from "./pages/banner/Banner";
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
             <Route  path="/product-section" component={ProductSection} />
             <Route  path="/section-add" component={SectionAdd} />
             <Route  path="/section-edit/:id" component={SectionEdit} />
+            <Route  path="/banner" component={Banner} />
           </Switch>
         </Layout>
       </Router>
