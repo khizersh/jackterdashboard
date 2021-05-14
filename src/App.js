@@ -21,6 +21,7 @@ import SectionEdit from "./pages/section/Edit";
 import SectionAdd from "./pages/section/Add";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Banner from "./pages/banner/Banner";
+import EditProductAttribute from "./pages/product/EditProductAttribute";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
             <Route  path="/products" component={ProductView} />
             <Route  path="/product-form" component={ProductForm} />
             <Route  path="/product-edit/:id" component={ProductEdit} />
+            <Route  path="/product-attribute/:id" component={EditProductAttribute} />
             <Route  path="/product-price/:id" component={SetPrice} />
             <Route  path="/product-detail/:id" component={ProductDetail} />
             <Route  path="/product-section" component={ProductSection} />

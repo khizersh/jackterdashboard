@@ -69,15 +69,15 @@ const ChildCategory = () => {
         <strong>
           <Button
             color="primary"
-            size="sm"
+            size="small"
             style={{ marginLeft: 16 }}
             onClick={() => onClickEdit(params.row)}
           >
             Edit
           </Button>
           <Button
-            color="danger"
-            size="sm"
+            color="secondary"
+            size="small"
             style={{ marginLeft: 16 }}
             onClick={() => onClickRemove(params.row)}
           >

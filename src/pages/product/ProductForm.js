@@ -32,10 +32,8 @@ const ProductForm = () => {
 
   // multiple att
   const [multipeView, setMultipeView] = useState(false);
-  const [
-    parentMultipleAttributeEdit,
-    setParentMultipleAttributeEdit,
-  ] = useState([]);
+  const [parentMultipleAttributeEdit, setParentMultipleAttributeEdit] =
+    useState([]);
   const [childMultipleAttribute, setMultipleChildAttribute] = useState([]);
   const [attributeImage, setAttributeImage] = useState([]);
   const [selectedMultipleAttribute, setSelectedMultipleAttribute] = useState(
@@ -232,12 +230,10 @@ const ProductForm = () => {
 
   // multi child attribute
   const onChangeMultipleChildAttribute = (select) => {
-  
     let lastChild = select[select.length - 1];
     let changeParent = parentMultipleAttributeEdit.filter(
       (f) => lastChild.value.parentId == f.value.id
     )[0];
-
 
     let ob = {
       attributeId: lastChild.value.id,
@@ -246,16 +242,15 @@ const ProductForm = () => {
     };
 
     let array = [];
-    attributeImage.map(m => {
-      array.push(m)
-    })
+    attributeImage.map((m) => {
+      array.push(m);
+    });
     array.push(ob);
     setAttributeImage(array);
 
     let bigArray = [];
     bigArray = selectedMultipleAttribute;
     if (select.length) {
-  
       if (selectedMultipleAttribute.length == 0) {
         bigArray.push({
           parentAttributeId: changeParent.value.id,
@@ -283,7 +278,6 @@ const ProductForm = () => {
 
     console.log("finalArray multi: ", bigArray);
     setSelectedMultipleAttribute(bigArray);
-  
   };
 
   const onClickMultiple = () => {
@@ -413,7 +407,7 @@ const ProductForm = () => {
         </Col>
 
         <Col className="mt-4 text-right" md={12} sm={12}>
-          <Button color="danger" onClick={onClickMultiple}>
+          <Button color="secondary" onClick={onClickMultiple}>
             Show multiple view
           </Button>
         </Col>
@@ -457,7 +451,6 @@ const ProductForm = () => {
                         <DropzoneArea
                           acceptedFiles={["image/*", "application/*"]}
                           onChange={(e) => onClickAttributeImage(e, m)}
-                          showFileNames
                           dropzoneText={`Select ${m.attributeName}`}
                           showAlerts={false}
                           filesLimit={7}
@@ -473,7 +466,6 @@ const ProductForm = () => {
           <DropzoneArea
             acceptedFiles={["image/*", "application/*"]}
             onChange={onClickImage}
-            showFileNames
             dropzoneText="Drag images here."
             showAlerts={false}
             filesLimit={7}

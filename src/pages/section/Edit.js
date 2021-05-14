@@ -98,7 +98,7 @@ const Edit = () => {
             timer: 2500,
             icon: "success",
           });
-        }else{
+        } else {
           swal({
             title: res.data.message,
             timer: 2500,
@@ -237,15 +237,7 @@ const Edit = () => {
                             <td>{m.title}</td>
                             <td>
                               {" "}
-                              <img
-                                src={
-                                  "data:" +
-                                  m.imageList[0].type +
-                                  ";base64," +
-                                  m.imageList[0].picByte
-                                }
-                                width="60"
-                              />{" "}
+                              <img src={m.image} width="60" />{" "}
                             </td>
                             <td>{m.categoryName}</td>
                             <td>
@@ -256,7 +248,7 @@ const Edit = () => {
                               >
                                 Change Positon
                               </Button>
-                              <Button variant="text" color="danger">
+                              <Button variant="text" color="secondary">
                                 Remove
                               </Button>
                             </td>

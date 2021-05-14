@@ -56,7 +56,7 @@ const ImageComponent = () => {
           <Button
             variant="contained"
             color="primary"
-            size="sm"
+            size="small"
             style={{ marginLeft: 16 }}
             onClick={() => onClickEdit(params.row)}
           >
@@ -64,8 +64,8 @@ const ImageComponent = () => {
           </Button>
           <Button
             variant="contained"
-            color="danger"
-            size="sm"
+            color="secondary"
+            size="small"
             style={{ marginLeft: 16 }}
             onClick={() => onClickRemove(params.row)}
           >

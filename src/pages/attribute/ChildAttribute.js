@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Switch from "@material-ui/core/Switch";
 import { Container, Row, Col, Form } from "react-bootstrap";
-import TextField from "@material-ui/core/TextField";
-import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
 import {
   getChildAttribute,
@@ -39,7 +36,7 @@ const ChildAttribute = () => {
           <Button
             variant="contained"
             color="primary"
-            size="sm"
+            size="small"
             style={{ marginLeft: 16 }}
             onClick={() => onClickEdit(params.row)}
           >
@@ -47,8 +44,8 @@ const ChildAttribute = () => {
           </Button>
           <Button
             variant="contained"
-            color="danger"
-            size="sm"
+            color="secondary"
+            size="small"
             style={{ marginLeft: 16 }}
             onClick={() => onClickRemove(params.row)}
           >

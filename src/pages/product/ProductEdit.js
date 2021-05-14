@@ -146,14 +146,14 @@ const ProductEdit = () => {
                     <td>
                       <Button
                         color="primary"
-                        size="sm"
+                        size="small"
                         onClick={() => toggle(image.id)}
                       >
                         UPDATE
                       </Button>
                       <Button
-                        color="danger"
-                        size="sm"
+                        color="secondary"
+                        size="small"
                         onClick={() => onClickRemove(image.id)}
                       >
                         REMOVE

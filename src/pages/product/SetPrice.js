@@ -202,10 +202,10 @@ const SetPrice = () => {
           </div>
           <div className="w-100 text-right">
             <Button
-              color="danger"
+              color="secondary"
               className
               variant="contained"
-              size="sm"
+              size="small"
               onClick={() => {
                 isEdit(false);
                 setEditAll(true);
@@ -244,7 +244,7 @@ const SetPrice = () => {
                         {" "}
                         <Button
                           color="primary"
-                          size="sm"
+                          size="small"
                           onClick={() => onClickEdit(m, i)}
                         >
                           UPDATE

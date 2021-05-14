@@ -22,14 +22,14 @@ const ProductView = () => {
   const [imageList, setimageList] = useState([]);
   const [colomn, setColomn] = useState([
     { field: "sNo", headerName: "S#", width: 70 },
-    { field: "title", headerName: "Product name", width: 200 },
-    { field: "description", headerName: "Description", width: 130 },
-    { field: "categoryName", headerName: "Category", width: 130 },
-    { field: "priceSet", headerName: "Active", width: 130 },
+    { field: "title", headerName: "Product name", width: 130 },
+    // { field: "description", headerName: "Description", width: 130 },
+    { field: "categoryName", headerName: "Category", width: 90 },
+    { field: "priceSet", headerName: "Active", width: 90 },
     {
       field: "image",
       headerName: "Image",
-      width: 130,
+      width: 100,
       renderCell: (params) => (
         <img src={params.value} alt="art image" width="45" />
       ),
@@ -37,27 +37,35 @@ const ProductView = () => {
     {
       field: "",
       headerName: "Actions",
-      width: 300,
+      width: 450,
       renderCell: (params) => (
         <strong>
           <Button
             color="primary"
-            size="sm"
+            size="small"
             onClick={() => onClickEdit(params.row)}
           >
-            Edit
+            Edit detail
           </Button>
           <Button
             color="secondary"
-            size="sm"
+            size="small"
             style={{ marginLeft: 10 }}
             onClick={() => onClickSetPrice(params.row)}
           >
             Set Price
           </Button>
           <Button
-            color="danger"
-            size="sm"
+            color="secondary"
+            size="small"
+            style={{ marginLeft: 10 }}
+            onClick={() => onClickEditAttribute(params.row)}
+          >
+            Edit Attribute
+          </Button>
+          <Button
+            color="secondary"
+            size="small"
             style={{ marginLeft: 10 }}
             onClick={() => onClickRemove(params.row)}
           >
@@ -100,6 +108,9 @@ const ProductView = () => {
 
   const onClickSetPrice = (value) => {
     history.push("/product-price/" + value.id);
+  };
+  const onClickEditAttribute = (value) => {
+    history.push("/product-attribute/" + value.id);
   };
 
   useEffect(() => {

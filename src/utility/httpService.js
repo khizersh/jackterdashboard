@@ -19,6 +19,7 @@ import {
   ProductSection,
   ProductSectionItem,
   HomeBanner,
+  AttributeMultiImage,
 } from "./apiLinks";
 
 // parent cat
@@ -41,9 +42,7 @@ export const editParentCategory = async (id, body) => {
 export const getChildCategory = async () => {
   return await get(ChildCategory);
 };
-export const getChildAttributeByParentId = async (id) => {
-  return await get(getChildAttributeByParent + id);
-};
+
 export const getChildCategoryListByParentId = async (id) => {
   return await get(getChildCategoryByParentId + id);
 };
@@ -99,7 +98,9 @@ export const addParentAttribute = async (body) => {
 export const getChildAttribute = async () => {
   return await get(Childattribute);
 };
-
+export const getChildAttributeByParentId = async (id) => {
+  return await get(getChildAttributeByParent + id);
+};
 export const deleteChildAttribute = async (id) => {
   return await deletee(Childattribute, id);
 };
@@ -112,6 +113,7 @@ export const addChildAttribute = async (body) => {
   return await post(Childattribute, body);
 };
 
+
 // product
 
 export const getProducts = async () => {
@@ -119,6 +121,9 @@ export const getProducts = async () => {
 };
 export const getProductDetailById = async (id) => {
   return await get(ProductDetail + "/" + id);
+};
+export const getProductFullDetailById = async (id) => {
+  return await get(Product + "/full/" + id);
 };
 
 export const deleteProductById = async (id) => {
@@ -152,10 +157,31 @@ export const updateAttributePrice = async (body) => {
   return await post(ProductPriceUpdate, body);
 };
 
+// product attribute 
+
+
+export const updateProductAttribute = async (body) => {
+  return await post(Product + "/parent", body);
+};
+
+export const addChildAttributeToProduct = async (body) => {
+  return await post(Product + "/child", body);
+};
+export const removeSubAttribute = async (body) => {
+  return await post(Product + "/sub", body);
+};
+export const removeParentAttributeOfProduct = async (id) => {
+  return await deletee(Product + "/remove-parent", id);
+};
+
+
 // attribute image
 
 export const addAttributeImage = async (body) => {
   return await post(AttributeImage, body);
+};
+export const deleteAttributeImage = async (id) => {
+  return await deletee(AttributeMultiImage, id);
 };
 
 // product section
