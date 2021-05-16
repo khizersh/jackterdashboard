@@ -20,6 +20,7 @@ import {
   ProductSectionItem,
   HomeBanner,
   AttributeMultiImage,
+  Coupon,
 } from "./apiLinks";
 
 // parent cat
@@ -54,8 +55,8 @@ export const addChildCategory = async (data) => {
 export const deleteChildCategory = async (id) => {
   return await deletee(ChildCategory, id);
 };
-export const editChildCategory = async ( body) => {
-  return await post(ChildCategory + "/update",  body);
+export const editChildCategory = async (body) => {
+  return await post(ChildCategory + "/update", body);
 };
 
 // image
@@ -113,7 +114,6 @@ export const addChildAttribute = async (body) => {
   return await post(Childattribute, body);
 };
 
-
 // product
 
 export const getProducts = async () => {
@@ -157,8 +157,7 @@ export const updateAttributePrice = async (body) => {
   return await post(ProductPriceUpdate, body);
 };
 
-// product attribute 
-
+// product attribute
 
 export const updateProductAttribute = async (body) => {
   return await post(Product + "/parent", body);
@@ -173,7 +172,6 @@ export const removeSubAttribute = async (body) => {
 export const removeParentAttributeOfProduct = async (id) => {
   return await deletee(Product + "/remove-parent", id);
 };
-
 
 // attribute image
 
@@ -203,22 +201,39 @@ export const changeItemPosition = async (body) => {
   return await post(ProductSectionItem + "/" + "position", body);
 };
 
-
-
 // home page banner
 
 export const getBanners = async () => {
   return await get(HomeBanner);
 };
 export const addBanner = async (body) => {
-  return await post(HomeBanner , body);
+  return await post(HomeBanner, body);
 };
 export const editBanner = async (body) => {
   return await post(HomeBanner + "/" + "edit", body);
 };
 export const deleteBanner = async (id) => {
-  return await deletee(HomeBanner ,  id);
+  return await deletee(HomeBanner, id);
 };
+
+// coupon
+
+export const getCoupons = async () => {
+  return await get(Coupon);
+};
+export const getCouponById = async (id) => {
+  return await get(Coupon + "/" + id);
+};
+export const addCoupon = async (body) => {
+  return await post(Coupon, body);
+};
+export const editCoupon = async (body) => {
+  return await post(Coupon + "/" + "edit", body);
+};
+export const deleteCoupon = async (id) => {
+  return await deletee(Coupon, id);
+};
+
 
 
 
@@ -249,7 +264,7 @@ const edit = async (url, id, body) => {
     if (id) {
       return await axios.put(url + "/" + id, body);
     } else {
-      return await axios.put(url , body);
+      return await axios.put(url, body);
     }
   } catch (error) {
     return error;

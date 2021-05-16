@@ -3,7 +3,6 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  useParams,
 } from "react-router-dom";
 import Home from "./pages/Home";
 import ParentCategory from "./pages/parent/ParentCategory";
@@ -22,6 +21,8 @@ import SectionAdd from "./pages/section/Add";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Banner from "./pages/banner/Banner";
 import EditProductAttribute from "./pages/product/EditProductAttribute";
+import Coupon from "./pages/coupon/Coupon";
+import CouponForm from "./pages/coupon/CouponForm";
 
 function App() {
   return (
@@ -45,6 +46,8 @@ function App() {
             <Route  path="/section-add" component={SectionAdd} />
             <Route  path="/section-edit/:id" component={SectionEdit} />
             <Route  path="/banner" component={Banner} />
+            <Route  path="/coupon" component={Coupon} />
+            <Route  path="/coupon-add" component={CouponForm} />
           </Switch>
         </Layout>
       </Router>

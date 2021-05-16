@@ -99,6 +99,7 @@ export default function MiniDrawer({ children }) {
   const [product, setProduct] = React.useState(false);
   const [section, setSection] = React.useState(false);
   const [banner, setBanner] = React.useState(false);
+  const [coupon, setCoupon] = React.useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -122,6 +123,10 @@ export default function MiniDrawer({ children }) {
   const handleBanner = () => {
     setBanner(!banner);
   };
+  const hanldeCoupon = () => {
+    setCoupon(!coupon);
+  };
+
 
   const links = [
     { name: "Dashboard", path: "/", icon: <InboxIcon /> },
@@ -216,6 +221,27 @@ export default function MiniDrawer({ children }) {
         {
           name: "Banner View",
           path: "/banner",
+          icon: <MailIcon />,
+        },
+       
+      ],
+    },
+    {
+      name: "Coupons",
+      path: "/coupon",
+      icon: <MailIcon />,
+      onClick: hanldeCoupon,
+      nested: true,
+      open: coupon,
+      child: [
+        {
+          name: "Coupon View",
+          path: "/coupon",
+          icon: <MailIcon />,
+        },
+        {
+          name: "Coupon Add",
+          path: "/coupon-add",
           icon: <MailIcon />,
         },
        
