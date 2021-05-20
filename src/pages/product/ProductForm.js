@@ -8,6 +8,7 @@ import {
   getChildCategoryListByParentId,
   getChildAttributeByParentId,
   addAttributeImage,
+  addPoint,
 } from "../../utility/httpService";
 import swal from "sweetalert";
 import Select from "react-select";
@@ -40,6 +41,12 @@ const ProductForm = () => {
     []
   );
   const [attributeImageData, setAttributeImageData] = useState([]);
+  const [bullet, setBullet] = useState([
+    {
+      point: "",
+      productId: null,
+    },
+  ]);
   const onChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
@@ -49,6 +56,7 @@ const ProductForm = () => {
   };
 
   const onSubmit = () => {
+    // console.log("bullet: ",bullet);
     let finalAttribute = [];
     if (selectedAttribute.length && selectedMultipleAttribute.length) {
       console.log("both");
@@ -105,15 +113,38 @@ const ProductForm = () => {
               console.log("attribute image add: ", resp);
             });
           });
+
+          if (bullet.length) {
+            let array = bullet.map((m) => {
+              return {
+                ...m,
+                productId: productId,
+              };
+            });
+            addPoint(array)
+              .then((bul) => {
+                if(bul && bul.statusCode == 1){
+                  swal({
+                    title: res.data.message,
+                    icon: "success",
+                    timer: 2500,
+                  });
+                }else{
+                  swal({
+                    title: "Something went wrong!",
+                    icon: "success",
+                    timer: 2500,
+                  });
+                }
+                
+              })
+              .catch((e) => console.log(e));
+          }
         } catch (error) {
           console.log("something went wrong");
         }
 
-        swal({
-          title: res.data.message,
-          icon: "success",
-          timer: 2500,
-        });
+       
       } else {
         swal({
           title: "Something went wrong!",
@@ -296,6 +327,14 @@ const ProductForm = () => {
       console.log("on click image: ", object);
     }
   };
+  const onIncreaseBullet = () => {
+    setBullet([...bullet, { point: "", productId: null }]);
+  };
+  const onChangeBullet = (e, index) => {
+    let clone = bullet;
+    clone[index].point = e.target.value;
+    setBullet(clone);
+  };
   //  on load
   useEffect(() => {
     getParentCategory()
@@ -351,6 +390,30 @@ const ProductForm = () => {
             multiple={true}
             placeholder="Enter description"
           />
+        </Col>
+        <Col md={12} sm={12} className="my-3">
+          <div>
+            <label>Bullet Points</label>
+            <button
+              className="btn btn-danger float-right my-1"
+              onClick={onIncreaseBullet}
+            >
+              Add Row +
+            </button>
+          </div>
+          {bullet.length
+            ? bullet.map((m, i) => (
+                <Input
+                  type="text"
+                  onChange={(e) => onChangeBullet(e, i)}
+                  // value={data.description}
+                  className="my-1"
+                  name="description"
+                  multiple={true}
+                  placeholder={`Enter bullet point ${i + 1}`}
+                />
+              ))
+            : null}
         </Col>
         <Col md={6} sm={12}>
           <label>Select parent category</label>

@@ -21,6 +21,7 @@ import {
   HomeBanner,
   AttributeMultiImage,
   Coupon,
+  Point,
 } from "./apiLinks";
 
 // parent cat
@@ -236,6 +237,21 @@ export const deleteCoupon = async (id) => {
 
 
 
+
+// Point
+
+export const getPointByProductId = async (id) => {
+  return await get(Point + "/product/" + id);
+};
+export const addPoint = async (body) => {
+  return await post(Point, body);
+};
+export const editPoint = async (body) => {
+  return await post(Point + "/" + "edit", body);
+};
+export const deletePoint = async (id) => {
+  return await deletee(Point, id);
+};
 
 
 
