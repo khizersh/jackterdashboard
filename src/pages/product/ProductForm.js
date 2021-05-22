@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col, Input, Button } from "reactstrap";
 import { DropzoneArea } from "material-ui-dropzone";
+import MultipleValueTextInput from "react-multivalue-text-input";
 import {
   addProduct,
   getParentAttribute,
@@ -12,9 +13,7 @@ import {
 } from "../../utility/httpService";
 import swal from "sweetalert";
 import Select from "react-select";
-import { Childattribute } from "../../utility/apiLinks";
 import "./product.style.css";
-import { TrendingUp } from "@material-ui/icons";
 
 const ProductForm = () => {
   const [data, setData] = useState({
@@ -31,6 +30,7 @@ const ProductForm = () => {
   const [childAttribute, setChildAttribute] = useState([]);
   const [selectedAttribute, setSelectedAttribute] = useState([]);
 
+  const [keyword, setKeyword] = useState("");
   // multiple att
   const [multipeView, setMultipeView] = useState(false);
   const [parentMultipleAttributeEdit, setParentMultipleAttributeEdit] =
@@ -55,8 +55,11 @@ const ProductForm = () => {
     setImageList(file);
   };
 
+  const onAddKeyword = (item, itemList) => {
+    setKeyword(itemList.join())
+  };
+
   const onSubmit = () => {
-    // console.log("bullet: ",bullet);
     let finalAttribute = [];
     if (selectedAttribute.length && selectedMultipleAttribute.length) {
       console.log("both");
@@ -87,7 +90,7 @@ const ProductForm = () => {
       });
     }
 
-    let customData = { ...data, attributeList: finalAttribute };
+    let customData = { ...data, attributeList: finalAttribute , keywords:keyword };
     console.log("customData: ", customData);
     var formData = new FormData();
     formData.append("productString", JSON.stringify(customData));
@@ -123,28 +126,25 @@ const ProductForm = () => {
             });
             addPoint(array)
               .then((bul) => {
-                if(bul && bul.statusCode == 1){
+                if (bul && bul.statusCode == 1) {
                   swal({
                     title: res.data.message,
                     icon: "success",
                     timer: 2500,
                   });
-                }else{
+                } else {
                   swal({
                     title: "Something went wrong!",
                     icon: "success",
                     timer: 2500,
                   });
                 }
-                
               })
               .catch((e) => console.log(e));
           }
         } catch (error) {
           console.log("something went wrong");
         }
-
-       
       } else {
         swal({
           title: "Something went wrong!",
@@ -389,6 +389,18 @@ const ProductForm = () => {
             name="description"
             multiple={true}
             placeholder="Enter description"
+          />
+        </Col>
+        <Col className="mt-4" lg={12} md={12} sm={12}>
+          <MultipleValueTextInput
+            onItemAdded={(item, allItems) => onAddKeyword(item, allItems)}
+            onItemDeleted={(item, allItems) => console.log()}
+            label="Enter keywords"
+            name="item-input"
+            placeholder="Enter Product keywords"
+            deleteButton={
+              <span style={{ color: "red", paddingLeft: "7px" }}>x</span>
+            }
           />
         </Col>
         <Col md={12} sm={12} className="my-3">

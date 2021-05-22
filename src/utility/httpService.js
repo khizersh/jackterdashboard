@@ -22,6 +22,8 @@ import {
   AttributeMultiImage,
   Coupon,
   Point,
+  Checkout,
+  User,
 } from "./apiLinks";
 
 // parent cat
@@ -235,9 +237,6 @@ export const deleteCoupon = async (id) => {
   return await deletee(Coupon, id);
 };
 
-
-
-
 // Point
 
 export const getPointByProductId = async (id) => {
@@ -253,7 +252,30 @@ export const deletePoint = async (id) => {
   return await deletee(Point, id);
 };
 
+// Order
 
+export const getAllCheckout = async () => {
+  return await get(Checkout);
+};
+export const getCheckoutById = async (id) => {
+  return await get(Checkout + "/" + id);
+};
+export const addCheckout = async (body) => {
+  return await post(Checkout, body);
+};
+
+
+// User
+
+export const getAllUser = async () => {
+  return await get(User);
+};
+// export const getUserById = async (id) => {
+//   return await get(User + "/" + id);
+// };
+// export const addCheckout = async (body) => {
+//   return await post(User, body);
+// };
 
 
 

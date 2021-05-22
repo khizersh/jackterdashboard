@@ -100,6 +100,8 @@ export default function MiniDrawer({ children }) {
   const [section, setSection] = React.useState(false);
   const [banner, setBanner] = React.useState(false);
   const [coupon, setCoupon] = React.useState(false);
+  const [order, setOrder] = React.useState(false);
+  const [user, setUser] = React.useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -126,7 +128,12 @@ export default function MiniDrawer({ children }) {
   const hanldeCoupon = () => {
     setCoupon(!coupon);
   };
-
+  const handleOrder = () => {
+    setOrder(!order);
+  };
+  const handleUser = () => {
+    setUser(!user);
+  };
 
   const links = [
     { name: "Dashboard", path: "/", icon: <InboxIcon /> },
@@ -211,6 +218,21 @@ export default function MiniDrawer({ children }) {
       ],
     },
     {
+      name: "Order",
+      path: "/image",
+      icon: <MailIcon />,
+      onClick: handleOrder,
+      nested: true,
+      open: order,
+      child: [
+        {
+          name: "Order view",
+          path: "/order",
+          icon: <MailIcon />,
+        },
+      ],
+    },
+    {
       name: "Home Banner",
       path: "/banner",
       icon: <MailIcon />,
@@ -223,7 +245,6 @@ export default function MiniDrawer({ children }) {
           path: "/banner",
           icon: <MailIcon />,
         },
-       
       ],
     },
     {
@@ -244,7 +265,21 @@ export default function MiniDrawer({ children }) {
           path: "/coupon-add",
           icon: <MailIcon />,
         },
-       
+      ],
+    },
+    {
+      name: "User management",
+      path: "/user",
+      icon: <MailIcon />,
+      onClick: handleUser,
+      nested: true,
+      open: user,
+      child: [
+        {
+          name: "User View",
+          path: "/user",
+          icon: <MailIcon />,
+        },
       ],
     },
   ];
@@ -271,7 +306,7 @@ export default function MiniDrawer({ children }) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            Mini variant drawer
+            The Jackter Admin Panel
           </Typography>
         </Toolbar>
       </AppBar>
@@ -313,13 +348,17 @@ export default function MiniDrawer({ children }) {
                   <List component="div" disablePadding>
                     {m.child.length
                       ? m.child.map((child, i) => (
-                        <Link to={child.path} key={i} style={{ textDecoration: "none" }}>
-                          <ListItem key={i} button className={classes.nested}>
-                            <ListItemIcon>
-                              <StarBorder />
-                            </ListItemIcon>
-                            <ListItemText primary={child.name} />
-                          </ListItem>
+                          <Link
+                            to={child.path}
+                            key={i}
+                            style={{ textDecoration: "none" }}
+                          >
+                            <ListItem key={i} button className={classes.nested}>
+                              <ListItemIcon>
+                                <StarBorder />
+                              </ListItemIcon>
+                              <ListItemText primary={child.name} />
+                            </ListItem>
                           </Link>
                         ))
                       : null}

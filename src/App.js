@@ -4,6 +4,7 @@ import {
   Switch,
   Route,
 } from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import Home from "./pages/Home";
 import ParentCategory from "./pages/parent/ParentCategory";
 import ChildCategory from "./pages/child/ChildCategory";
@@ -18,11 +19,13 @@ import SetPrice from "./pages/product/SetPrice";
 import ProductSection from "./pages/section/ProductSection";
 import SectionEdit from "./pages/section/Edit";
 import SectionAdd from "./pages/section/Add";
-import 'bootstrap/dist/css/bootstrap.min.css';
 import Banner from "./pages/banner/Banner";
 import EditProductAttribute from "./pages/product/EditProductAttribute";
 import Coupon from "./pages/coupon/Coupon";
 import CouponForm from "./pages/coupon/CouponForm";
+import Order from "./pages/order/Order";
+import OrderDetail from "./pages/order/OrderDetail";
+import User from "./pages/user/User";
 
 function App() {
   return (
@@ -48,6 +51,9 @@ function App() {
             <Route  path="/banner" component={Banner} />
             <Route  path="/coupon" component={Coupon} />
             <Route  path="/coupon-add" component={CouponForm} />
+            <Route  path="/order" component={Order} />
+            <Route  path="/order-detail/:id" component={OrderDetail} />
+            <Route  path="/user" component={User} />
           </Switch>
         </Layout>
       </Router>

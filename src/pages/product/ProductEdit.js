@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import MultipleValueTextInput from "react-multivalue-text-input";
 import {
   editProduct,
   getProductDetailById,
   deleteProductImage,
+  getPointByProductId,
+  editPoint,
 } from "../../utility/httpService";
 import { Row, Col, Input, Button as ButtonR, Label, Table } from "reactstrap";
 import swal from "sweetalert";
@@ -19,16 +22,22 @@ const ProductEdit = () => {
     id: null,
     title: "",
     description: "",
+    keywords: "",
   });
   const [images, setImages] = useState([]);
+  const [bullet, setBullet] = useState([]);
   const [isEdit, setEdit] = useState(false);
   const [editImageId, setImageEditId] = useState(null);
 
   const onChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
+
   const onSubmit = () => {
-    editProduct(data.id, data)
+    let key = data.keywords;
+    delete data.keywords;
+    let body = { ...data, keywords: key.join() };
+    editProduct(data.id, body)
       .then((res) => {
         if (res && res.data) {
           swal({ title: "Edit successfully!", timer: 2500, icon: "success" });
@@ -44,7 +53,6 @@ const ProductEdit = () => {
   };
 
   const onClickRemove = (id) => {
-    console.log("id: ", id);
     deleteProductImage(id)
       .then((res) => {
         if (res && res.data && res.data.statusCode == 1) {
@@ -64,26 +72,66 @@ const ProductEdit = () => {
       })
       .catch((e) => console.log(e));
   };
+  const onAddKeyword = (item, list) => {
+    setData({ ...data, keywords: list });
+    // console.log("list: ",list);
+  };
+  const onChangeBullet = (e, index) => {
+    let array = [...bullet];
+    let item = { ...array[index] };
+    item.point = e.target.value;
+    array[index] = item;
+    setBullet(array);
+  };
+  const onUpdateBullet = (p) => {
+    editPoint(p)
+      .then((res) => {
+        if (res.data && res.data.statusCode == 1) {
+          swal({
+            title: res.data.message,
+            timer: 2500,
+            icon: "success",
+          });
+        } else {
+          swal({
+            title: res.data.message,
+            timer: 2500,
+            icon: "error",
+          });
+        }
+      })
+      .catch((e) => console.log(e));
+  };
 
   useEffect(() => {
     if (id) {
       getProductDetailById(id)
         .then((res) => {
           if (res.data && res.data.statusCode == 1) {
-            console.log("res ", res);
+            let keyword = res.data.data.keywords ? res.data.data.keywords.split(",")  : []
+            console.log("keyword: ", keyword);
             setData({
               id: id,
               title: res.data.data.title,
               description: res.data.data.description,
+              keywords: keyword,
             });
 
             let array = res.data.data.imageList.map((m) => {
               return {
                 ...m,
-                image:  m.image,
+                image: m.image,
               };
             });
             setImages(array);
+          }
+        })
+        .catch((e) => console.log(e));
+
+      getPointByProductId(id)
+        .then((res) => {
+          if (res && res.data.statusCode == 1) {
+            setBullet(res.data.data);
           }
         })
         .catch((e) => console.log(e));
@@ -120,10 +168,49 @@ const ProductEdit = () => {
             placeholder="Enter title"
           />
         </Col>
-        <Col md="6" sm="12">
+        <Col lg={12} md={12} sm={12}>
+          <MultipleValueTextInput
+            onItemAdded={(item, allItems) => onAddKeyword(item, allItems)}
+            onItemDeleted={(item, allItems) => onAddKeyword(item, allItems)}
+            label="Update keywords"
+            name="item-input"
+            placeholder="Enter Product keywords"
+             values={data.keywords.length ? data.keywords : []}
+            deleteButton={
+              <span style={{ color: "red", paddingLeft: "7px" }}>x</span>
+            }
+          />
+        </Col>
+
+        <Col md="12" sm="12" className="text-center mt-3">
           <ButtonR color="primary" onClick={onSubmit}>
             EDIT DETAIL
           </ButtonR>
+        </Col>
+      </Row>
+      <Row className="mt-2">
+        <Col md="12" sm="12">
+          <Label>Product Bullet Points</Label>
+          {bullet.length
+            ? bullet.map((m, i) => (
+                <Row className="mt-2">
+                  <Col md={9} sm={12}>
+                    {" "}
+                    <Input
+                      type="text"
+                      onChange={(e) => onChangeBullet(e, i)}
+                      value={m.point}
+                      placeholder="Enter bullet"
+                    />
+                  </Col>
+                  <Col md={3} sm={12}>
+                    <ButtonR color="danger" onClick={() => onUpdateBullet(m)}>
+                      UPDATE BULLETE
+                    </ButtonR>
+                  </Col>
+                </Row>
+              ))
+            : null}
         </Col>
       </Row>
       <Row className="mt-4 p-4">
