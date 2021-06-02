@@ -26,6 +26,7 @@ import CouponForm from "./pages/coupon/CouponForm";
 import Order from "./pages/order/Order";
 import OrderDetail from "./pages/order/OrderDetail";
 import User from "./pages/user/User";
+import Review from "./pages/review/Review";
 
 function App() {
   return (
@@ -54,6 +55,7 @@ function App() {
             <Route  path="/order" component={Order} />
             <Route  path="/order-detail/:id" component={OrderDetail} />
             <Route  path="/user" component={User} />
+            <Route  path="/product-review" component={Review} />
           </Switch>
         </Layout>
       </Router>

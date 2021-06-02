@@ -102,6 +102,7 @@ export default function MiniDrawer({ children }) {
   const [coupon, setCoupon] = React.useState(false);
   const [order, setOrder] = React.useState(false);
   const [user, setUser] = React.useState(false);
+  const [review, setReview] = React.useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -133,6 +134,9 @@ export default function MiniDrawer({ children }) {
   };
   const handleUser = () => {
     setUser(!user);
+  };
+  const handleReview = () => {
+    setReview(!review);
   };
 
   const links = [
@@ -278,6 +282,21 @@ export default function MiniDrawer({ children }) {
         {
           name: "User View",
           path: "/user",
+          icon: <MailIcon />,
+        },
+      ],
+    },
+    {
+      name: "Product Review",
+      path: "/user",
+      icon: <MailIcon />,
+      onClick: handleReview,
+      nested: true,
+      open: review,
+      child: [
+        {
+          name: "Reviews view",
+          path: "/product-review",
           icon: <MailIcon />,
         },
       ],

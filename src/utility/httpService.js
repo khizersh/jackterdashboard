@@ -24,6 +24,7 @@ import {
   Point,
   Checkout,
   User,
+  Review,
 } from "./apiLinks";
 
 // parent cat
@@ -270,13 +271,24 @@ export const addCheckout = async (body) => {
 export const getAllUser = async () => {
   return await get(User);
 };
-// export const getUserById = async (id) => {
-//   return await get(User + "/" + id);
-// };
-// export const addCheckout = async (body) => {
-//   return await post(User, body);
-// };
 
+    
+
+    // reviews
+
+    export const getAllReviews = async () => {
+      return await get(Review);
+    };
+    export const addReviewByAdmin = async (body) => {
+      return await post(Review + "/admin", body);
+    };
+    export const editReview = async (body) => {
+      return await post(Review + "/edit", body);
+    };
+    export const deleteReview = async (id) => {
+      return await deletee(Review, id);
+    };
+    
 
 
 

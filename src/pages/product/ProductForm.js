@@ -13,6 +13,7 @@ import {
 } from "../../utility/httpService";
 import swal from "sweetalert";
 import Select from "react-select";
+import ReactQuill from "react-quill";
 import "./product.style.css";
 
 const ProductForm = () => {
@@ -56,7 +57,7 @@ const ProductForm = () => {
   };
 
   const onAddKeyword = (item, itemList) => {
-    setKeyword(itemList.join())
+    setKeyword(itemList.join());
   };
 
   const onSubmit = () => {
@@ -90,8 +91,11 @@ const ProductForm = () => {
       });
     }
 
-    let customData = { ...data, attributeList: finalAttribute , keywords:keyword };
-    console.log("customData: ", customData);
+    let customData = {
+      ...data,
+      attributeList: finalAttribute,
+      keywords: keyword,
+    };
     var formData = new FormData();
     formData.append("productString", JSON.stringify(customData));
     imageList.map((m) => {
@@ -126,7 +130,7 @@ const ProductForm = () => {
             });
             addPoint(array)
               .then((bul) => {
-                if (bul && bul.statusCode == 1) {
+                if (bul && bul.data.statusCode == 1) {
                   swal({
                     title: res.data.message,
                     icon: "success",
@@ -314,6 +318,9 @@ const ProductForm = () => {
   const onClickMultiple = () => {
     setMultipeView(true);
   };
+  const onChangeDesc = (value) => {;
+    setData({ ...data, description: value });
+  };
 
   const onClickAttributeImage = (e, obj) => {
     if (e.length) {
@@ -330,10 +337,12 @@ const ProductForm = () => {
   const onIncreaseBullet = () => {
     setBullet([...bullet, { point: "", productId: null }]);
   };
-  const onChangeBullet = (e, index) => {
-    let clone = bullet;
-    clone[index].point = e.target.value;
-    setBullet(clone);
+  const onChangeBullet = (value) => {
+    let body =   {
+      point: value,
+      productId: null,
+    }
+    setBullet([body]);
   };
   //  on load
   useEffect(() => {
@@ -382,14 +391,7 @@ const ProductForm = () => {
         </Col>
         <Col md={6} sm={12}>
           <label>Product description</label>
-          <Input
-            type="textarea"
-            onChange={onChange}
-            value={data.description}
-            name="description"
-            multiple={true}
-            placeholder="Enter description"
-          />
+          <ReactQuill value={data.description} onChange={onChangeDesc} />
         </Col>
         <Col className="mt-4" lg={12} md={12} sm={12}>
           <MultipleValueTextInput
@@ -397,6 +399,7 @@ const ProductForm = () => {
             onItemDeleted={(item, allItems) => console.log()}
             label="Enter keywords"
             name="item-input"
+            className="form-control"
             placeholder="Enter Product keywords"
             deleteButton={
               <span style={{ color: "red", paddingLeft: "7px" }}>x</span>
@@ -406,14 +409,15 @@ const ProductForm = () => {
         <Col md={12} sm={12} className="my-3">
           <div>
             <label>Bullet Points</label>
-            <button
+            {/* <button
               className="btn btn-danger float-right my-1"
               onClick={onIncreaseBullet}
             >
               Add Row +
-            </button>
+            </button> */}
           </div>
-          {bullet.length
+          <ReactQuill onChange={onChangeBullet} />
+          {/* {bullet.length
             ? bullet.map((m, i) => (
                 <Input
                   type="text"
@@ -425,7 +429,7 @@ const ProductForm = () => {
                   placeholder={`Enter bullet point ${i + 1}`}
                 />
               ))
-            : null}
+            : null} */}
         </Col>
         <Col md={6} sm={12}>
           <label>Select parent category</label>

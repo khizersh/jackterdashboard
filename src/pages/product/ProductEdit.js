@@ -12,6 +12,7 @@ import { Row, Col, Input, Button as ButtonR, Label, Table } from "reactstrap";
 import swal from "sweetalert";
 import ImageEditModal from "./ImageEditModal";
 import Button from "@material-ui/core/Button";
+import ReactQuill from "react-quill";
 import "./product.style.css";
 import { reloadSetTime } from "../../utility/Service";
 
@@ -102,14 +103,19 @@ const ProductEdit = () => {
       })
       .catch((e) => console.log(e));
   };
+  const onChangeDesc = (value) => {
+    setData({ ...data, description: value });
+  };
 
   useEffect(() => {
     if (id) {
       getProductDetailById(id)
         .then((res) => {
           if (res.data && res.data.statusCode == 1) {
-            let keyword = res.data.data.keywords ? res.data.data.keywords.split(",")  : []
-            console.log("keyword: ", keyword);
+            let keyword = res.data.data.keywords
+              ? res.data.data.keywords.split(",")
+              : [];
+
             setData({
               id: id,
               title: res.data.data.title,
@@ -159,14 +165,15 @@ const ProductEdit = () => {
         </Col>
         <Col md="6" sm="12">
           <Label>Enter description</Label>
-          <Input
+          <ReactQuill value={data.description} onChange={onChangeDesc} />
+          {/* <Input
             type="textarea"
             label="Enter title"
             onChange={onChange}
             value={data.description}
             name="description"
             placeholder="Enter title"
-          />
+          /> */}
         </Col>
         <Col lg={12} md={12} sm={12}>
           <MultipleValueTextInput
@@ -175,7 +182,7 @@ const ProductEdit = () => {
             label="Update keywords"
             name="item-input"
             placeholder="Enter Product keywords"
-             values={data.keywords.length ? data.keywords : []}
+            values={data.keywords.length ? data.keywords : []}
             deleteButton={
               <span style={{ color: "red", paddingLeft: "7px" }}>x</span>
             }

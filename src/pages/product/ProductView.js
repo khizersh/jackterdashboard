@@ -25,7 +25,7 @@ const ProductView = () => {
     { field: "title", headerName: "Product name", width: 130 },
     // { field: "description", headerName: "Description", width: 130 },
     { field: "categoryName", headerName: "Category", width: 90 },
-    { field: "priceSet", headerName: "Active", width: 90 },
+    { field: "active", headerName: "Active", width: 90 },
     {
       field: "image",
       headerName: "Image",
@@ -77,7 +77,6 @@ const ProductView = () => {
   ]);
 
   const onClickEdit = (value) => {
-    console.log("value: ", value);
     history.push("/product-edit/" + value.id);
   };
 
@@ -123,8 +122,10 @@ const ProductView = () => {
               ...m,
               priceSet: m.priceSet ? m.priceSet : false,
               image:m.imageList[0].image,
+              active: m.range ? true : false
             };
           });
+          console.log("array: ",array);
           setRow(array);
         }
       })

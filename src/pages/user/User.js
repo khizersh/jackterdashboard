@@ -4,6 +4,7 @@ import { getAllUser } from "../../utility/httpService";
 import Button from "@material-ui/core/Button";
 import { useHistory } from "react-router-dom";
 import swal from "sweetalert";
+import userLogo from "../../utility/images/user.png";
 
 const User = () => {
   const router = useHistory();
@@ -13,19 +14,28 @@ const User = () => {
     { field: "firstName", headerName: "First Name", width: 150 },
     { field: "lastName", headerName: "Last Name", width: 100 },
     { field: "email", headerName: "Email", width: 130 },
-    { field: "enabled", headerName: "Verified", width: 130 },
     {
-        field: "userImage",
-        headerName: "Image",
-        width: 100,
-        renderCell: (params) => (
-          <img src={params.value} alt="user avatar" width="45" />
-        ),
-      },
+      field: "enabled",
+      headerName: "Verified",
+      width: 100,
+      renderCell: (params) => (
+        <span className={`badge badge-${params.value ? "success" : "danger"} px-2`}>
+          {params.value ? "Yes" : "No"}
+        </span>
+      ),
+    },
+    {
+      field: "userImage",
+      headerName: "Image",
+      width: 100,
+      renderCell: (params) => (
+        <img src={params.value} alt="user avatar" width="45" />
+      ),
+    },
     {
       field: "",
       headerName: "Action",
-      width: 130,
+      width: 300,
       renderCell: (params) => (
         <strong>
           {/* <span class={`p-2 badge badge-${params.row.statusColor}`}>
@@ -38,7 +48,16 @@ const User = () => {
             style={{ marginLeft: 16 }}
             onClick={() => onViewOrder(params.row)}
           >
-            View Order
+            Coupon
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            style={{ marginLeft: 16 }}
+            onClick={() => onViewOrder(params.row)}
+          >
+            Order
           </Button>
         </strong>
       ),
@@ -55,6 +74,7 @@ const User = () => {
             return {
               sNo: i + 1,
               ...m,
+              userImage: m.userImage || userLogo,
             };
           });
           setRow(array);
