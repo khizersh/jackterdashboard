@@ -27,6 +27,7 @@ const ProductEdit = () => {
   });
   const [images, setImages] = useState([]);
   const [bullet, setBullet] = useState([]);
+  const [keywords, setKeywords] = useState([]);
   const [isEdit, setEdit] = useState(false);
   const [editImageId, setImageEditId] = useState(null);
 
@@ -116,6 +117,8 @@ const ProductEdit = () => {
               ? res.data.data.keywords.split(",")
               : [];
 
+            setKeywords(keyword);
+            console.log("keyword: ", keyword);
             setData({
               id: id,
               title: res.data.data.title,
@@ -142,7 +145,7 @@ const ProductEdit = () => {
         })
         .catch((e) => console.log(e));
     }
-  }, [id]);
+  }, [id ]);
 
   return (
     <div className="card p-3">
@@ -175,19 +178,22 @@ const ProductEdit = () => {
             placeholder="Enter title"
           /> */}
         </Col>
-        <Col lg={12} md={12} sm={12}>
-          <MultipleValueTextInput
-            onItemAdded={(item, allItems) => onAddKeyword(item, allItems)}
-            onItemDeleted={(item, allItems) => onAddKeyword(item, allItems)}
-            label="Update keywords"
-            name="item-input"
-            placeholder="Enter Product keywords"
-            values={data.keywords.length ? data.keywords : []}
-            deleteButton={
-              <span style={{ color: "red", paddingLeft: "7px" }}>x</span>
-            }
-          />
-        </Col>
+        {keywords.length ? (
+          <Col lg={12} md={12} sm={12}>
+            <MultipleValueTextInput
+              onItemAdded={(item, allItems) => onAddKeyword(item, allItems)}
+              onItemDeleted={(item, allItems) => onAddKeyword(item, allItems)}
+              label="Update keywords"
+              name="item-input"
+              className="form-control"
+              placeholder="Enter Product keywords"
+              values={keywords}
+              deleteButton={
+                <span style={{ color: "red", paddingLeft: "7px" }}>x</span>
+              }
+            />
+          </Col>
+        ) : null}
 
         <Col md="12" sm="12" className="text-center mt-3">
           <ButtonR color="primary" onClick={onSubmit}>
@@ -203,13 +209,18 @@ const ProductEdit = () => {
                 <Row className="mt-2">
                   <Col md={9} sm={12}>
                     {" "}
-                    <Input
+                    {/* <Input
                       type="text"
                       onChange={(e) => onChangeBullet(e, i)}
                       value={m.point}
                       placeholder="Enter bullet"
+                    /> */}
+                    <ReactQuill
+                      onChange={(e) => onChangeBullet(e, i)}
+                      value={m.point}
                     />
                   </Col>
+
                   <Col md={3} sm={12}>
                     <ButtonR color="danger" onClick={() => onUpdateBullet(m)}>
                       UPDATE BULLETE

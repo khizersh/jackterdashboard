@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { DataGrid } from "@material-ui/data-grid";
 import Button from "@material-ui/core/Button";
-import { getAllCheckout, getAllOrders } from "../../utility/httpService";
+import { getOrderByUserId } from "../../utility/httpService";
 import swal from "sweetalert";
 import { useHistory } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
-const Order = () => {
+const UserOrder = () => {
   const router = useHistory();
   const [row, setRow] = useState([]);
+  const { id } = useParams();
   const [colomn, setColomn] = useState([
     { field: "sNo", headerName: "S#", width: 70 },
     { field: "orderDate", headerName: "Order Date", width: 150 },
@@ -85,26 +87,28 @@ const Order = () => {
   }
 
   useEffect(() => {
-    getAllOrders()
-      .then((res) => {
-        if (res?.data?.statusCode == 1) {
-          let array = res.data.data.map((m, i) => {
-            let orderColor = returnStatus(m.orderStatus);
-            let shipStatus = returnStatus(m.shipStatus);
-            return {
-              ...m,
-              id: i,
-              sNo: i + 1,
-              orderStatus: m.orderStatus + "-" + orderColor,
-              shipStatus: m.shipStatus + "-" + shipStatus,
-            };
-          });
-          setRow(array);
-        } else {
-          swal({ title: res.data.message, icon: "error", timer: 2500 });
-        }
-      })
-      .catch((e) => console.log(e));
+    if (id) {
+      getOrderByUserId(id)
+        .then((res) => {
+          if (res?.data?.statusCode == 1) {
+            let array = res.data.data.map((m, i) => {
+              let orderColor = returnStatus(m.orderStatus);
+              let shipStatus = returnStatus(m.shipStatus);
+              return {
+                ...m,
+                id: i,
+                sNo: i + 1,
+                orderStatus: m.orderStatus + "-" + orderColor,
+                shipStatus: m.shipStatus + "-" + shipStatus,
+              };
+            });
+            setRow(array);
+          } else {
+            swal({ title: res.data.message, icon: "error", timer: 2500 });
+          }
+        })
+        .catch((e) => console.log(e));
+    }
   }, []);
   return (
     <div className="container">
@@ -119,4 +123,4 @@ const Order = () => {
   );
 };
 
-export default Order;
+export default UserOrder;

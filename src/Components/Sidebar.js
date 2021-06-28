@@ -272,7 +272,7 @@ export default function MiniDrawer({ children }) {
       ],
     },
     {
-      name: "User management",
+      name: "User",
       path: "/user",
       icon: <MailIcon />,
       onClick: handleUser,

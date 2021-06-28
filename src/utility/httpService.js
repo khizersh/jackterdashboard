@@ -25,6 +25,8 @@ import {
   Checkout,
   User,
   Review,
+  UserCoupon,
+  Order,
 } from "./apiLinks";
 
 // parent cat
@@ -265,31 +267,53 @@ export const addCheckout = async (body) => {
   return await post(Checkout, body);
 };
 
-
 // User
 
 export const getAllUser = async () => {
   return await get(User);
 };
 
-    
+// reviews
 
-    // reviews
+export const getAllReviews = async () => {
+  return await get(Review);
+};
+export const addReviewByAdmin = async (body) => {
+  return await post(Review + "/admin", body);
+};
+export const editReview = async (body) => {
+  return await post(Review + "/edit", body);
+};
+export const deleteReview = async (id) => {
+  return await deletee(Review, id);
+};
 
-    export const getAllReviews = async () => {
-      return await get(Review);
-    };
-    export const addReviewByAdmin = async (body) => {
-      return await post(Review + "/admin", body);
-    };
-    export const editReview = async (body) => {
-      return await post(Review + "/edit", body);
-    };
-    export const deleteReview = async (id) => {
-      return await deletee(Review, id);
-    };
-    
+// user coupons
 
+export const getCouponByUser = async (id) => {
+  return await get(UserCoupon + "/user/" + id);
+};
+export const deleteAssignCoupon = async (id) => {
+  return await deletee(UserCoupon, id);
+};
+export const assignCouponToUser = async (body) => {
+  return await post(UserCoupon + "/user/assign", body);
+};
+
+// user orders
+
+export const getAllOrders = async () => {
+  return await get(Order);
+};
+export const getOrderByCheckoutId = async (id) => {
+  return await get(Order + "/checkout/" + id);
+};
+export const getOrderByUserId = async (id) => {
+  return await get(Order + "/user/" + id);
+};
+export const getOrderById = async (id) => {
+  return await get(Order + "/" + id);
+};
 
 
 // helper functions
