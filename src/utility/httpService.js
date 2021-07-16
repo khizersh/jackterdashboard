@@ -27,6 +27,7 @@ import {
   Review,
   UserCoupon,
   Order,
+  CacheData,
 } from "./apiLinks";
 
 // parent cat
@@ -113,7 +114,7 @@ export const deleteChildAttribute = async (id) => {
 };
 
 export const editChildAttribute = async (id, body) => {
-  return await edit(Childattribute, id, body);
+  return await post(Childattribute + "/update",  body);
 };
 
 export const addChildAttribute = async (body) => {
@@ -124,6 +125,12 @@ export const addChildAttribute = async (body) => {
 
 export const getProducts = async () => {
   return await get(Product);
+};
+export const getProductsCache = async () => {
+  return await get(CacheData + "/product");
+};
+export const addProductCache = async () => {
+  return await post(CacheData + "/product" , "");
 };
 export const getProductDetailById = async (id) => {
   return await get(ProductDetail + "/" + id);

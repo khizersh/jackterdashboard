@@ -61,7 +61,6 @@ const ChildAttribute = () => {
   };
 
   const onClickEdit = (value) => {
-    console.log("value: ", value);
     setData({
       id: value.id,
       title: value.title,
@@ -102,7 +101,7 @@ const ChildAttribute = () => {
       }
     if (isEdit) {
       editChildAttribute(data.id, data).then((res) => {
-        if (res && res.data && res.data.statusCodeValue == 1) {
+        if (res && res.data && res.data.statusCode == 1) {
           swal({
             title: "Edit Successfully!",
             icon: "success",

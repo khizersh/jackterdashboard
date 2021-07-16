@@ -1,5 +1,6 @@
 // export const BaseURL = "https://jackter.herokuapp.com/"
 export const BaseURL = "http://localhost:9999/"
+// export const BaseURL = "http://147.182.178.140:9999/"
 
 
 export const ParentCategory = BaseURL + "api/parentCategory"
@@ -29,3 +30,4 @@ export const getChildCategoryByParentId = BaseURL + "api/childCategory/parent/"
  export const Review = BaseURL + "api/review"
  export const UserCoupon = BaseURL + "api/assign-coupon"
  export const Order = BaseURL + "api/order"
+ export const CacheData = BaseURL + "api/cache"

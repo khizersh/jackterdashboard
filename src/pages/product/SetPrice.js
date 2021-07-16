@@ -8,7 +8,6 @@ import {
   updateAttributePrice,
 } from "../../utility/httpService";
 import "./product.style.css";
-import { reloadSetTime } from "../../utility/Service";
 
 const SetPrice = () => {
   const { id } = useParams();
@@ -28,6 +27,10 @@ const SetPrice = () => {
       ...data,
       price: obj.price ? obj.price : "",
       discountPrice: obj.discountPrice ? obj.discountPrice : "",
+      cadPrice: obj.cadPrice ? obj.cadPrice : "",
+      cadDiscountPrice: obj.cadDiscountPrice ? obj.cadDiscountPrice : "",
+      euroPrice: obj.euroPrice ? obj.euroPrice : "",
+      euroDiscountPrice: obj.euroDiscountPrice ? obj.euroDiscountPrice : "",
       discount: obj.discount ? obj.discount : false,
       index: index,
     });
@@ -107,29 +110,75 @@ const SetPrice = () => {
               <div className="w-100 text-center">
                 <h2>Update all</h2>
               </div>
-              <Col md={3} sm={12}>
-                <Label>Enter Price</Label>
+              <Col md={6} sm={12}>
+                <Label>Enter USD Price</Label>
                 <Input
                   type="number"
-                  label="Enter Price"
+                  label="Enter USD Price"
                   onChange={onChangeAll}
                   value={data.price}
                   name="price"
-                  placeholder="Enter Price"
+                  placeholder="Enter USD Price"
                 />
               </Col>
-              <Col md={3} sm={12}>
-                <Label>Enter Discount Price</Label>
+              <Col md={6} sm={12}>
+                <Label>Enter USD Discount Price</Label>
                 <Input
                   type="number"
-                  label="Enter Discount Price"
+                  label="Enter USD Discount Price"
                   onChange={onChangeAll}
                   value={data.discountPrice}
                   name="discountPrice"
-                  placeholder="Enter Discount Price"
+                  placeholder="Enter USD Discount Price"
                 />
               </Col>
-              <Col md={2} sm={12} className="m-auto pt-3">
+              <hr />
+              <Col md={6} sm={12}>
+                <Label>Enter CAD Price</Label>
+                <Input
+                  type="number"
+                  label="Enter CAD Price"
+                  onChange={onChangeAll}
+                  value={data.cadPrice}
+                  name="cadPrice"
+                  placeholder="Enter CAD Price"
+                />
+              </Col>
+              <Col md={6} sm={12}>
+                <Label>Enter CAD discount Price</Label>
+                <Input
+                  type="number"
+                  label="Enter CAD discount Price"
+                  onChange={onChangeAll}
+                  value={data.cadDiscountPrice}
+                  name="cadDiscountPrice"
+                  placeholder="Enter CAD discount Price"
+                />
+              </Col>
+              <hr />
+              <Col md={6} sm={12}>
+                <Label>Enter Euro Price</Label>
+                <Input
+                  type="number"
+                  label="Enter Euro Price"
+                  onChange={onChangeAll}
+                  value={data.euroPrice}
+                  name="euroPrice"
+                  placeholder="Enter Euro Price"
+                />
+              </Col>
+              <Col md={6} sm={12}>
+                <Label>Enter Euro discount Price</Label>
+                <Input
+                  type="number"
+                  label="Enter CAD discount Price"
+                  onChange={onChangeAll}
+                  value={data.euroDiscountPrice}
+                  name="euroDiscountPrice"
+                  placeholder="Enter Euro discount Price"
+                />
+              </Col>
+              <Col md={12} sm={12} className="m-auto pt-3">
                 <Label check>
                   <Input
                     type="checkbox"
@@ -155,29 +204,76 @@ const SetPrice = () => {
               <div className="w-100 text-center">
                 <h2>Update specific</h2>
               </div>
-              <Col md={3} sm={12}>
-                <Label>Enter Price</Label>
+              <Col md={6} sm={12}>
+                <Label>Enter USD Price</Label>
                 <Input
                   type="number"
-                  label="Enter Price"
+                  label="Enter USD Price"
                   onChange={onChange}
                   value={data.price}
                   name="price"
-                  placeholder="Enter Price"
+                  placeholder="Enter USD Price"
                 />
               </Col>
-              <Col md={3} sm={12}>
-                <Label>Enter Discount Price</Label>
+              <Col md={6} sm={12}>
+                <Label>Enter USD Discount Price</Label>
                 <Input
                   type="number"
-                  label="Enter Discount Price"
+                  label="Enter USD Discount Price"
                   onChange={onChange}
                   value={data.discountPrice}
                   name="discountPrice"
-                  placeholder="Enter Discount Price"
+                  placeholder="Enter USD Discount Price"
                 />
               </Col>
-              <Col md={2} sm={12} className="m-auto pt-3">
+              <hr />
+              <Col md={6} sm={12}>
+                <Label>Enter CAD Price</Label>
+                <Input
+                  type="number"
+                  label="Enter CAD Price"
+                  onChange={onChange}
+                  value={data.cadPrice}
+                  name="cadPrice"
+                  placeholder="Enter CAD Price"
+                />
+              </Col>
+              <Col md={6} sm={12}>
+                <Label>Enter CAD discount Price</Label>
+                <Input
+                  type="number"
+                  label="Enter CAD discount Price"
+                  onChange={onChange}
+                  value={data.cadDiscountPrice}
+                  name="cadDiscountPrice"
+                  placeholder="Enter CAD discount Price"
+                />
+              </Col>
+              <hr />
+              <Col md={6} sm={12}>
+                <Label>Enter Euro Price</Label>
+                <Input
+                  type="number"
+                  label="Enter Euro Price"
+                  onChange={onChange}
+                  value={data.euroPrice}
+                  name="euroPrice"
+                  placeholder="Enter Euro Price"
+                />
+              </Col>
+              <Col md={6} sm={12}>
+                <Label>Enter Euro discount Price</Label>
+                <Input
+                  type="number"
+                  label="Enter CAD discount Price"
+                  onChange={onChange}
+                  value={data.euroDiscountPrice}
+                  name="euroDiscountPrice"
+                  placeholder="Enter Euro discount Price"
+                />
+              </Col>
+
+              <Col md={12} sm={12} className="m-auto pt-3">
                 <Label check>
                   <Input
                     type="checkbox"
@@ -222,8 +318,12 @@ const SetPrice = () => {
                 <th>Attribute 2</th>
                 <th>Attribute 3</th>
                 <th>Attribute 4</th>
-                <th>Price</th>
+                <th>USD Price</th>
                 <th>Discount Price</th>
+                <th>CAD Price</th>
+                <th>CAD Discount Price</th>
+                <th>Euro Price</th>
+                <th>Euro Discount Price</th>
                 <th>On Discount?</th>
                 <th>Action</th>
               </tr>
@@ -239,6 +339,10 @@ const SetPrice = () => {
                       <td>{m.attribute_4 ? m.attribute_4 : "-"}</td>
                       <td>{m.price}</td>
                       <td>{m.discountPrice}</td>
+                      <td>{m.cadPrice}</td>
+                      <td>{m.cadDiscountPrice}</td>
+                      <td>{m.euroPrice}</td>
+                      <td>{m.euroDiscountPrice}</td>
                       <td>{m.discount ? "Yes" : "No"}</td>
                       <td>
                         {" "}

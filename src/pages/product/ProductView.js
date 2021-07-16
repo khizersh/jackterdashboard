@@ -1,14 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { deleteProductById, getProducts } from "../../utility/httpService";
-import Checkbox from "@material-ui/core/Checkbox";
+import React, { useState, useEffect, useContext } from "react";
+import {
+  deleteProductById,
+  getProducts,
+  getProductsCache,
+  addProductCache,
+} from "../../utility/httpService";
 import Button from "@material-ui/core/Button";
 import { Container, Row, Col } from "react-bootstrap";
-import { Input } from "reactstrap";
 import { useHistory } from "react-router-dom";
 import { DataGrid } from "@material-ui/data-grid";
 import swal from "sweetalert";
+import { MainContext } from "../../context/MainContext";
 
 const ProductView = () => {
+  const { setLoader } = useContext(MainContext);
   const history = useHistory();
   const [products, setProducts] = useState([]);
   const [row, setRow] = useState([]);
@@ -104,6 +109,21 @@ const ProductView = () => {
   const onClickAdd = () => {
     history.push("product-form");
   };
+  const adCache = () => {
+    setLoader(true);
+    addProductCache()
+      .then((res) => {
+        setLoader(false);
+        if (res.data.statusCode == 1) {
+          swal({ title: res.data.message, timer: 2500, icon: "success" });
+        } else {
+          swal({ title: res.data.message, timer: 2500, icon: "error" });
+        }
+      })
+      .catch((e) => {
+        setLoader(false);
+      });
+  };
 
   const onClickSetPrice = (value) => {
     history.push("/product-price/" + value.id);
@@ -113,23 +133,29 @@ const ProductView = () => {
   };
 
   useEffect(() => {
-    getProducts()
+    // getProducts()
+    setLoader(true);
+    getProductsCache()
       .then((res) => {
+        setLoader(false);
         if (res.data.statusCode == 1) {
           let array = res.data.data.map((m, i) => {
             return {
               sNo: ++i,
               ...m,
               priceSet: m.priceSet ? m.priceSet : false,
-              image:m.imageList[0].image,
-              active: m.range ? true : false
+              image: m.imageList[0].image,
+              active: m.range ? true : false,
             };
           });
-          console.log("array: ",array);
+          console.log("array: ", array);
           setRow(array);
         }
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        setLoader(false);
+        console.log(e);
+      });
   }, []);
   return (
     <Container>
@@ -138,6 +164,10 @@ const ProductView = () => {
           <div className="text-right">
             <Button color="primary" onClick={onClickAdd}>
               Add Product
+            </Button>{" "}
+            |
+            <Button color="secondary" onClick={adCache}>
+              Refresh cache
             </Button>
           </div>
         </Col>
