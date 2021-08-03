@@ -28,6 +28,7 @@ import {
   UserCoupon,
   Order,
   CacheData,
+  ProductSectionCache,
 } from "./apiLinks";
 
 // parent cat
@@ -198,10 +199,17 @@ export const deleteAttributeImage = async (id) => {
 // product section
 
 export const getProductSections = async () => {
-  return await get(ProductSection);
+  // return await get(ProductSection);
+  return await get(ProductSectionCache);
 };
 export const addProductSection = async (body) => {
   return await post(ProductSection, body);
+};
+export const removeSectionItem = async (body) => {
+  return await post(ProductSectionItem + "/remove", body);
+};
+export const addSectionCache = async (body) => {
+  return await post(ProductSectionCache, body);
 };
 
 export const getItemsBySectionId = async (id) => {

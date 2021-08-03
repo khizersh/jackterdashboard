@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Row, Col, Input, Button } from "reactstrap";
 import { DropzoneArea } from "material-ui-dropzone";
 import MultipleValueTextInput from "react-multivalue-text-input";
@@ -15,8 +15,10 @@ import swal from "sweetalert";
 import Select from "react-select";
 import ReactQuill from "react-quill";
 import "./product.style.css";
+import { MainContext } from "../../context/MainContext";
 
 const ProductForm = () => {
+  const { setLoader } = useContext(MainContext);
   const [data, setData] = useState({
     id: null,
     title: "",
@@ -61,29 +63,29 @@ const ProductForm = () => {
   };
 
   const onSubmit = () => {
+    setLoader(true);
     let finalAttribute = [];
     if (selectedAttribute.length && selectedMultipleAttribute.length) {
-      console.log("both");
       let attributes = selectedAttribute;
       selectedMultipleAttribute.map((m) => attributes.push(m));
       finalAttribute = attributes;
     } else if (selectedAttribute.length && !selectedMultipleAttribute.length) {
-      console.log("selectedAttribute");
       finalAttribute = selectedAttribute;
     } else {
-      console.log("selectedMultipleAttribute");
       finalAttribute = selectedMultipleAttribute;
     }
     setSelectedAttribute(finalAttribute);
-    console.log("finalAttribute: ", finalAttribute);
+
     if (!imageList.length) {
+      setLoader(false);
       return swal({
         title: "Please select images!",
         timer: 2500,
-        icon: "danger",
+        icon: "error",
       });
     }
     if (!finalAttribute.length) {
+      setLoader(false);
       return swal({
         title: "Please select attributes!",
         timer: 2500,
@@ -101,62 +103,67 @@ const ProductForm = () => {
     imageList.map((m) => {
       formData.append("imageList", m);
     });
-    addProduct(formData).then((res) => {
-      if (res && res.data.statusCode == 1) {
-        let productId = res.data.data;
+    addProduct(formData)
+      .then((res) => {
+        if (res && res.data.statusCode == 1) {
+          let productId = res.data.data;
 
-        try {
-          attributeImageData.map((m) => {
-            let form = new FormData();
-            let attribute = {
-              attributeId: m.attributeId,
-              productId: productId,
-            };
-            form.append("attribute", JSON.stringify(attribute));
-            m.imageList.map((n) => {
-              form.append("imageList", n);
-            });
-            addAttributeImage(form).then((resp) => {
-              console.log("attribute image add: ", resp);
-            });
-          });
-
-          if (bullet.length) {
-            let array = bullet.map((m) => {
-              return {
-                ...m,
+          try {
+            attributeImageData.map((m) => {
+              let form = new FormData();
+              let attribute = {
+                attributeId: m.attributeId,
                 productId: productId,
               };
+              form.append("attribute", JSON.stringify(attribute));
+              m.imageList.map((n) => {
+                form.append("imageList", n);
+              });
+              addAttributeImage(form).then((resp) => {
+                console.log("attribute image add: ", resp);
+              });
             });
-            addPoint(array)
-              .then((bul) => {
-                if (bul && bul.data.statusCode == 1) {
-                  swal({
-                    title: res.data.message,
-                    icon: "success",
-                    timer: 2500,
-                  });
-                } else {
-                  swal({
-                    title: "Something went wrong!",
-                    icon: "success",
-                    timer: 2500,
-                  });
-                }
-              })
-              .catch((e) => console.log(e));
+
+            if (bullet.length) {
+              let array = bullet.map((m) => {
+                return {
+                  ...m,
+                  productId: productId,
+                };
+              });
+              addPoint(array)
+                .then((bul) => {
+                  if (bul && bul.data.statusCode == 1) {
+                    swal({
+                      title: res.data.message,
+                      icon: "success",
+                      timer: 2500,
+                    });
+                  } else {
+                    swal({
+                      title: bul.data.message,
+                      icon: "error",
+                      timer: 2500,
+                    });
+                  }
+                  setLoader(false);
+                })
+                .catch((e) => setLoader(false));
+            }
+          } catch (error) {
+            setLoader(false);
+            console.log("something went wrong");
           }
-        } catch (error) {
-          console.log("something went wrong");
+        } else {
+          setLoader(false);
+          swal({
+            title: res.data.message,
+            icon: "error",
+            timer: 2500,
+          });
         }
-      } else {
-        swal({
-          title: "Something went wrong!",
-          icon: "success",
-          timer: 2500,
-        });
-      }
-    });
+      })
+      .catch((e) => setLoader(false));
   };
   const onChangeCategory = (e) => {
     setData({ ...data, categoryId: e.target.value });
@@ -318,7 +325,7 @@ const ProductForm = () => {
   const onClickMultiple = () => {
     setMultipeView(true);
   };
-  const onChangeDesc = (value) => {;
+  const onChangeDesc = (value) => {
     setData({ ...data, description: value });
   };
 
@@ -338,10 +345,10 @@ const ProductForm = () => {
     setBullet([...bullet, { point: "", productId: null }]);
   };
   const onChangeBullet = (value) => {
-    let body =   {
+    let body = {
       point: value,
       productId: null,
-    }
+    };
     setBullet([body]);
   };
   //  on load

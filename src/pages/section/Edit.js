@@ -1,18 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import {
   addSectionItemWithList,
   getItemsBySectionId,
   getProducts,
   changeItemPosition,
+  removeSectionItem,
 } from "../../utility/httpService";
 import { Container, Row, Col, Card, CardBody, Input } from "reactstrap";
 import Button from "@material-ui/core/Button";
 import Select from "react-select";
 import swal from "sweetalert";
 import { reloadSetTime } from "../../utility/Service";
+import { MainContext } from "../../context/MainContext";
 
 const Edit = () => {
+  const { setLoader } = useContext(MainContext);
   const history = useHistory();
   const { id } = useParams();
   const [data, setData] = useState({ id: null, title: "" });
@@ -26,7 +29,7 @@ const Edit = () => {
     to: null,
   });
   const [isPos, setIsPos] = useState(false);
-
+  console.log(productList);
   const addProduct = () => {
     getProducts()
       .then((res) => {
@@ -45,8 +48,31 @@ const Edit = () => {
   };
 
   const onSelect = (e) => {
-    console.log("e: ", e);
     setselectedProduct(e);
+  };
+  const onClickRemove = (data) => {
+    setLoader(true);
+
+    removeSectionItem({ sectionId: id, sequence: data.sequence })
+      .then((res) => {
+        setLoader(false);
+        if (res.data.statusCode == 1) {
+          swal({
+            title: res.data.message,
+            timer: 2000,
+            icon: "success",
+          });
+        }else{
+          swal({
+            title: res.data.message,
+            icon: "error",
+            timer: 2000,
+          });
+        }
+      })
+      .catch((e) => {
+        setLoader(false);
+      });
   };
 
   const onClick = () => {
@@ -113,7 +139,6 @@ const Edit = () => {
     getItemsBySectionId(id)
       .then((res) => {
         if (res.data.statusCode == 1) {
-          console.log(res);
           setData({ id: id, title: res.data.data.title });
           setproductList(res.data.data.productList);
         }
@@ -237,7 +262,7 @@ const Edit = () => {
                             <td>{m.title}</td>
                             <td>
                               {" "}
-                              <img src={m.image} width="60" />{" "}
+                              <img src={m.imageList[0].image} width="60" />{" "}
                             </td>
                             <td>{m.categoryName}</td>
                             <td>
@@ -248,7 +273,11 @@ const Edit = () => {
                               >
                                 Change Positon
                               </Button>
-                              <Button variant="text" color="secondary">
+                              <Button
+                                variant="text"
+                                color="secondary"
+                                onClick={() => onClickRemove(m)}
+                              >
                                 Remove
                               </Button>
                             </td>

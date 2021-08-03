@@ -325,7 +325,7 @@ export default function MiniDrawer({ children }) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            The Jackter Admin Panel
+            The Genuine Jackets Admin panel
           </Typography>
         </Toolbar>
       </AppBar>
