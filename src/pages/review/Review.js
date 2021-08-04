@@ -28,36 +28,37 @@ const Review = () => {
     review: "",
     reviewCount: 0,
     userName: "",
+    date: null,
   });
 
   const [colomn, setColomn] = useState([
     { field: "sNo", headerName: "S#", width: 70 },
-    { field: "review", headerName: "Review", width: 200 },
+    { field: "date", headerName: "Date", width: 130 },
+    { field: "userName", headerName: "Customer name", width: 200 },
     { field: "reviewCount", headerName: "Stars", width: 200 },
-    { field: "userName", headerName: "User name", width: 200 },
-    {
-      field: "userImage",
-      headerName: "User Image",
-      width: 130,
-      renderCell: (params) => (
-        <img
-          src={params.value}
-          alt="product"
-          width="50px"
-          className="img-fluid"
-        />
-      ),
-    },
-    { field: "date", headerName: "Date", width: 130 },
-    { field: "date", headerName: "Date", width: 130 },
+    { field: "review", headerName: "Comment", width: 200 },
+    // {
+    //   field: "userImage",
+    //   headerName: "User Image",
+    //   width: 130,
+    //   renderCell: (params) => (
+    //     <img
+    //       src={params.value}
+    //       alt="product"
+    //       width="50px"
+    //       className="img-fluid"
+    //     />
+    //   ),
+    // },
     {
       field: "productImage",
       headerName: "Product Image",
       width: 200,
       renderCell: (params) => (
-        <img src={params.value} alt="product" width="100px" />
+        <img src={params.value} alt="product" width="50px" />
       ),
     },
+    { field: "productId", headerName: "Product id", width: 200 },
     {
       field: "",
       headerName: "Actions",
@@ -89,10 +90,12 @@ const Review = () => {
 
   useEffect(() => {
     getAllReviews().then((res) => {
+      console.log("resL ", res);
       if (res.data.statusCode == 1) {
         let array = res.data.data.map((m, i) => {
           let obj = {
             ...m,
+            date: m.date.split("T")[0],
             sNo: i + 1,
           };
           return obj;
@@ -108,8 +111,17 @@ const Review = () => {
     });
   }, []);
 
-  const onChange = (e) => {
-    setData({ ...data, [e.target.name]: e.target.value });
+  const onChange = (e, type) => {
+    if (type == "count") {
+      if (e.target.value >= 0 && e.target.value <= 5) {
+        setData({ ...data, [e.target.name]: e.target.value });
+      }
+    } else {
+      setData({ ...data, [e.target.name]: e.target.value });
+    }
+  };
+  const onChangeDate = (e) => {
+    setData({ ...data, date: new Date(e.target.value) });
   };
   const onClickImage = (e) => {
     setImage(e[0]);
@@ -155,7 +167,6 @@ const Review = () => {
   const addCategory = () => {
     if (isEdit) {
       editReview(data).then((res) => {
-        console.log("res: ", res);
         if (res && res.data.statusCode == 1) {
           swal({
             title: "Edit successfully!",
@@ -216,14 +227,25 @@ const Review = () => {
           />
         </Col>
         <Col lg={6} md={6} sm={12} xs={12}>
-          <label>Enter review</label>
+          <label>Enter stars </label>
           <Input
             type="number"
             id="standard-basic"
             label="Parent category"
-            onChange={onChange}
+            onChange={(e) => onChange(e , "count")}
             value={data.reviewCount}
             name="reviewCount"
+          />
+        </Col>
+        <Col lg={6} md={6} sm={12} xs={12}>
+          <label>Enter stars </label>
+          <Input
+            type="date"
+            id="standard-basic"
+            label="Parent category"
+            onChange={onChangeDate}
+            // value={data.date}
+            name="date"
           />
         </Col>
         <Col lg={6} md={6} sm={12}>

@@ -86,24 +86,28 @@ const ProductView = () => {
   };
 
   const onClickRemove = (value) => {
-    deleteProductById(value.id).then((res) => {
-      if (res && res.status == 200) {
-        swal({
-          title: "Remove successfully!",
-          timer: 2000,
-          icon: "success",
-        });
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
-      } else {
-        swal({
-          title: "Cannot be deleted!",
-          timer: 3000,
-          icon: "error",
-        });
-      }
-    });
+    setLoader(true);
+    deleteProductById(value.id)
+      .then((res) => {
+        setLoader(false);
+        if (res && res.data.statusCode == 1) {
+          swal({
+            title: res.data.message,
+            timer: 2000,
+            icon: "success",
+          });
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        } else {
+          swal({
+            title: res.data.message,
+            timer: 3000,
+            icon: "error",
+          });
+        }
+      })
+      .catch((e) => setLoader(false));
   };
 
   const onClickAdd = () => {
@@ -139,12 +143,13 @@ const ProductView = () => {
       .then((res) => {
         setLoader(false);
         if (res.data.statusCode == 1) {
+          console.log("res.data map: ",res.data);
           let array = res.data.data.map((m, i) => {
             return {
               sNo: ++i,
               ...m,
               priceSet: m.priceSet ? m.priceSet : false,
-              image: m.imageList[0].image,
+              image: m.imageList[0]?.image,
               active: m.range ? true : false,
             };
           });

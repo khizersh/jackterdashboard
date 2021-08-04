@@ -262,7 +262,7 @@ const Edit = () => {
                             <td>{m.title}</td>
                             <td>
                               {" "}
-                              <img src={m.imageList[0].image} width="60" />{" "}
+                              <img src={m.imageList[0]?.image} width="60" />{" "}
                             </td>
                             <td>{m.categoryName}</td>
                             <td>

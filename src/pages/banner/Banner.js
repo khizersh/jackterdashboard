@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useContext } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { Input } from "reactstrap";
 import { DataGrid } from "@material-ui/data-grid";
@@ -6,8 +6,10 @@ import { DropzoneArea } from "material-ui-dropzone";
 import swal from "sweetalert";
 import { getBanners, addBanner , editBanner, deleteBanner} from "../../utility/httpService";
 import Button from "@material-ui/core/Button";
+import { MainContext } from "../../context/MainContext";
 
 const Banner = () => {
+  const { setLoader } = useContext(MainContext);
   const [data, setData] = useState({
     id: "",
     title: "",
@@ -15,6 +17,7 @@ const Banner = () => {
     url: "",
   });
   const [image, setImage] = useState(null);
+  const [mImage, setMImage] = useState(null);
   const [row, setRow] = useState([]);
   const [edit, setEdit] = useState(false);
   const [colomn, setColomn] = useState([
@@ -23,6 +26,19 @@ const Banner = () => {
     {
       field: "image",
       headerName: "Image",
+      width: 200,
+      renderCell: (params) => (
+        <img
+          src={params.value}
+          alt="art image"
+          width="45"
+          className="img-fluid"
+        />
+      ),
+    },
+    {
+      field: "mobileImage",
+      headerName: "Mobile image",
       width: 200,
       renderCell: (params) => (
         <img
@@ -73,8 +89,10 @@ const Banner = () => {
     })
   };
   const onClickRemove = (e) => {
+    setLoader(true)
     deleteBanner(e.id)
     .then((res) => {
+      setLoader(false)
       if (res && res.data.statusCode == 1) {
         swal({ title: res.data.data, icon: "success", timer: 2500 });
       } else {
@@ -85,7 +103,7 @@ const Banner = () => {
         });
       }
     })
-    .catch((e) => console.log(e));
+    .catch((e) =>  setLoader(false));
   };
   const onChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
@@ -93,7 +111,11 @@ const Banner = () => {
   const onClickImage = (e) => {
     setImage(e[0]);
   };
+  const onClickMobileImage = (e) => {
+    setMImage(e[0]);
+  };
   const addBannerData = () => {
+    setLoader(true)
     var form = new FormData();
     form.append("banner", JSON.stringify(data));
 
@@ -101,8 +123,12 @@ const Banner = () => {
       if (image) {
         form.append("file", image);
       }
+      if (mImage) {
+        form.append("mobileFile", mImage);
+      }
       editBanner(form)
       .then((res) => {
+        setLoader(false)
         if (res && res.data.statusCode == 1) {
           swal({ title: res.data.message, icon: "success", timer: 2500 });
         } else {
@@ -113,15 +139,22 @@ const Banner = () => {
           });
         }
       })
-      .catch((e) => console.log(e));
+      .catch((e) =>  setLoader(false));
 
     } else {
+        
       if (!image) {
         return swal({ title: "Image not found!", icon: "error", timer: 2500 });
       }
+      if (!mImage) {
+        return swal({ title: "Mobile Image not found!", icon: "error", timer: 2500 });
+      }
       form.append("file", image);
+      form.append("mobileFile", mImage);
+
       addBanner(form)
         .then((res) => {
+          setLoader(false)
           if (res && res.data.statusCode == 1) {
             swal({ title: res.data.message, icon: "success", timer: 2500 });
           } else {
@@ -132,13 +165,15 @@ const Banner = () => {
             });
           }
         })
-        .catch((e) => console.log(e));
+        .catch((e) => setLoader(false));
     }
   };
 
   useEffect(() => {
+    setLoader(true)
     getBanners()
       .then((res) => {
+        setLoader(false)
         if (res && res.data.data) {
           let array = res.data.data.map((m, i) => {
             return {
@@ -149,7 +184,7 @@ const Banner = () => {
           setRow(array);
         }
       })
-      .catch((e) => console.log(e));
+      .catch((e) =>  setLoader(false));
   }, []);
   return (
     <Container>
@@ -185,12 +220,23 @@ const Banner = () => {
           />
         </Col>
         <Col lg={6} md={6} sm={12}>
-          <label>Banner Image</label>
+          <label>Banner Image size: 1350x420</label>
           <DropzoneArea
             acceptedFiles={["image/*", "application/*"]}
             onChange={onClickImage}
             showFileNames
             dropzoneText="Drag Image here."
+            showAlerts={false}
+            filesLimit={1}
+          />
+        </Col>
+        <Col lg={6} md={6} sm={12}>
+          <label>Banner Image Mobile size:  360x250</label>
+          <DropzoneArea
+            acceptedFiles={["image/*", "application/*"]}
+            onChange={onClickMobileImage}
+            showFileNames
+            dropzoneText="Drag Image here for mobile."
             showAlerts={false}
             filesLimit={1}
           />
