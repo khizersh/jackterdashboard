@@ -199,8 +199,8 @@ export const deleteAttributeImage = async (id) => {
 // product section
 
 export const getProductSections = async () => {
-  // return await get(ProductSection);
-  return await get(ProductSectionCache);
+  return await get(ProductSection);
+  // return await get(ProductSectionCache);
 };
 export const addProductSection = async (body) => {
   return await post(ProductSection, body);
