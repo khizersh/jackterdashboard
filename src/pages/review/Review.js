@@ -9,6 +9,7 @@ import {
   editReview,
   getAllReviews,
   getProducts,
+  getProductsCache,
   deleteReview,
   addReviewByAdmin,
 } from "../../utility/httpService";
@@ -18,6 +19,7 @@ const Review = () => {
   const [title, setTitle] = useState("Add Review");
   const [isEdit, setIdEdit] = useState(false);
   const [image, setImage] = useState(null);
+  const [reviewImage, setReviewImage] = useState(null);
 
   const [row, setRow] = useState([]);
   const [product, setProduct] = useState([]);
@@ -58,6 +60,14 @@ const Review = () => {
         <img src={params.value} alt="product" width="50px" />
       ),
     },
+    {
+      field: "reviewImage",
+      headerName: "Review Image",
+      width: 200,
+      renderCell: (params) => (
+        <img src={params.value} alt="product" width="50px" />
+      ),
+    },
     { field: "productId", headerName: "Product id", width: 200 },
     {
       field: "",
@@ -90,7 +100,6 @@ const Review = () => {
 
   useEffect(() => {
     getAllReviews().then((res) => {
-      console.log("resL ", res);
       if (res.data.statusCode == 1) {
         let array = res.data.data.map((m, i) => {
           let obj = {
@@ -104,7 +113,7 @@ const Review = () => {
         setRow(array);
       }
     });
-    getProducts().then((res) => {
+    getProductsCache().then((res) => {
       if (res.data.statusCode == 1) {
         setProduct(res.data.data);
       }
@@ -126,6 +135,9 @@ const Review = () => {
   const onClickImage = (e) => {
     setImage(e[0]);
   };
+  const onChangeReviewImage = (e) => {
+    setReviewImage(e.target.files[0]);
+  };
 
   const onClickEdit = (value) => {
     setIdEdit(true);
@@ -136,6 +148,8 @@ const Review = () => {
       userId: value.userId,
       review: value.review,
       reviewCount: value.reviewCount,
+      userName : value.userName
+
     };
     setData(body);
   };
@@ -164,7 +178,7 @@ const Review = () => {
     });
   };
 
-  const addCategory = () => {
+  const addReview = () => {
     if (isEdit) {
       editReview(data).then((res) => {
         if (res && res.data.statusCode == 1) {
@@ -194,6 +208,7 @@ const Review = () => {
       let form = new FormData();
       form.append("reviewString", JSON.stringify(data));
       form.append("image", image);
+      form.append("file", reviewImage);
       addReviewByAdmin(form).then((res) => {
         if (res && res.data.statusCode == 1) {
           swal({
@@ -238,12 +253,23 @@ const Review = () => {
           />
         </Col>
         <Col lg={6} md={6} sm={12} xs={12}>
-          <label>Enter stars </label>
+          <label>Enter date </label>
           <Input
             type="date"
             id="standard-basic"
             label="Parent category"
             onChange={onChangeDate}
+            // value={data.date}
+            name="date"
+          />
+        </Col>
+        <Col lg={6} md={6} sm={12} xs={12}>
+          <label>Enter  review image</label>
+          <Input
+            type="file"
+            id="standard-basic"
+            label="Parent category"
+            onChange={onChangeReviewImage}
             // value={data.date}
             name="date"
           />
@@ -292,7 +318,7 @@ const Review = () => {
           </Form.Group>
         </Col>
         <Col lg={12} md={12} sm={12} xs={12}>
-          <Button variant="contained" color="primary" onClick={addCategory}>
+          <Button variant="contained" color="primary" onClick={addReview}>
             {title}
           </Button>
         </Col>
