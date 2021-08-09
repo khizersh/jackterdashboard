@@ -180,7 +180,10 @@ const Review = () => {
 
   const addReview = () => {
     if (isEdit) {
-      editReview(data).then((res) => {
+      let form = new FormData();
+      form.append("reviewString", JSON.stringify(data));
+      form.append("file", reviewImage);
+      editReview(form).then((res) => {
         if (res && res.data.statusCode == 1) {
           swal({
             title: "Edit successfully!",
@@ -302,7 +305,7 @@ const Review = () => {
             />
           </Form.Group>
         </Col>
-        <Col sm={12}>
+        {!isEdit ?  <Col sm={12}>
           <Form.Group controlId="exampleForm.ControlSelect1">
             <Form.Label>Select User image</Form.Label>
             <Col lg={6} md={6} sm={12}>
@@ -316,7 +319,8 @@ const Review = () => {
               />
             </Col>
           </Form.Group>
-        </Col>
+        </Col> : null }
+       
         <Col lg={12} md={12} sm={12} xs={12}>
           <Button variant="contained" color="primary" onClick={addReview}>
             {title}
