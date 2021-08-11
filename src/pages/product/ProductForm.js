@@ -59,7 +59,15 @@ const ProductForm = () => {
   };
 
   const onAddKeyword = (item, itemList) => {
-    setKeyword(itemList.join());
+    if (itemList.join().length > 230) {
+      return swal({
+        title: "Keyword maximum length is 200 char",
+        icon: "error",
+        timer: 2500,
+      });
+    }else{
+      setKeyword(itemList.join());
+    }
   };
 
   const onSubmit = () => {
@@ -138,7 +146,7 @@ const ProductForm = () => {
                       title: res.data.message,
                       icon: "success",
                       timer: 2500,
-                    });
+                    }).then((res) => window.location.reload());
                   } else {
                     swal({
                       title: bul.data.message,
@@ -216,7 +224,6 @@ const ProductForm = () => {
   //  multi attribute...
   const onChangeMultiAttribute = (selected) => {
     setParentMultipleAttributeEdit(selected);
-    console.log("selected: ", selected);
     if (selected.length > 0) {
       let attribute = selected[selected.length - 1];
 
@@ -326,7 +333,15 @@ const ProductForm = () => {
     setMultipeView(true);
   };
   const onChangeDesc = (value) => {
-    setData({ ...data, description: value });
+    if (value.length > 230) {
+      return swal({
+        title: "Description maximum length is 230 char",
+        icon: "error",
+        timer: 2500,
+      });
+    }else{
+      setData({ ...data, description: value });
+    }
   };
 
   const onClickAttributeImage = (e, obj) => {
@@ -345,11 +360,20 @@ const ProductForm = () => {
     setBullet([...bullet, { point: "", productId: null }]);
   };
   const onChangeBullet = (value) => {
-    let body = {
-      point: value,
-      productId: null,
-    };
-    setBullet([body]);
+    if (value.length > 230) {
+      return swal({
+        title: "Bullet points maximum length is 230 char",
+        icon: "error",
+        timer: 2500,
+      });
+    }else{
+      let body = {
+        point: value,
+        productId: null,
+      };
+      setBullet([body]);
+    }
+  
   };
   //  on load
   useEffect(() => {
@@ -397,14 +421,14 @@ const ProductForm = () => {
           />
         </Col>
         <Col md={6} sm={12}>
-          <label>Product description</label>
+          <label>Product description (Description maximum length is 230 char)</label>
           <ReactQuill value={data.description} onChange={onChangeDesc} />
         </Col>
         <Col className="mt-4" lg={12} md={12} sm={12}>
           <MultipleValueTextInput
             onItemAdded={(item, allItems) => onAddKeyword(item, allItems)}
             onItemDeleted={(item, allItems) => console.log()}
-            label="Enter keywords"
+            label="Enter keywords (Keyword maximum length is 230 char)"
             name="item-input"
             className="form-control"
             placeholder="Enter Product keywords"
@@ -415,7 +439,7 @@ const ProductForm = () => {
         </Col>
         <Col md={12} sm={12} className="my-3">
           <div>
-            <label>Bullet Points</label>
+            <label>Bullet Points (Bullet points maximum length is 230 char)</label>
             {/* <button
               className="btn btn-danger float-right my-1"
               onClick={onIncreaseBullet}
