@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Form } from "react-bootstrap";
 import Button from "@material-ui/core/Button";
 import swal from "sweetalert";
@@ -9,9 +9,10 @@ import {
   removeSubAttribute,
 } from "../../utility/httpService";
 import AttributeImageModal from "./AttributeImageModal";
+import { MainContext } from "../../context/MainContext";
 
 const ChildAttribute = ({ data, pid }) => {
-
+  const { setLoader } = useContext(MainContext);
   const [attribute, setAttribute] = useState([]);
   const [childAttribute, setChildAttribute] = useState([]);
   const [child, setChild] = useState(null);
@@ -51,12 +52,14 @@ const ChildAttribute = ({ data, pid }) => {
     if (!form.parentID || !form.childAttributeId) {
       return swal({ title: "Enter all fields!", timer: 2500, icon: "error" });
     }
+    setLoader(true);
     let body = {
       ...form,
       productId: pid,
     };
     addChildAttributeToProduct(body)
       .then((res) => {
+        setLoader(false);
         if (res && res.data.statusCode == 1) {
           swal({
             title: res.data.message,
@@ -71,7 +74,7 @@ const ChildAttribute = ({ data, pid }) => {
           });
         }
       })
-      .catch((e) => console.log(e));
+      .catch((e) => setLoader(false));
   };
 
   const onClickAddImage = (e) => {
@@ -84,6 +87,7 @@ const ChildAttribute = ({ data, pid }) => {
   };
 
   const onClickRemove = (e) => {
+    setLoader(true);
     let body = {
       childAttributeId: e.id,
       parentID: e.parentId,
@@ -91,6 +95,7 @@ const ChildAttribute = ({ data, pid }) => {
     };
     removeSubAttribute(body)
       .then((res) => {
+        setLoader(false);
         if (res && res.data.statusCode == 1) {
           swal({
             title: res.data.message,
@@ -105,13 +110,14 @@ const ChildAttribute = ({ data, pid }) => {
           });
         }
       })
-      .catch((e) => console.log(e));
+      .catch((e) => setLoader(false));
   };
 
   const onClickRemoveImage = (e) => {
-    console.log(e);
+    setLoader(true);
     deleteAttributeImage(e.id)
       .then((res) => {
+        setLoader(false);
         if (res && res.data.statusCode == 1) {
           swal({
             title: res.data.message,
@@ -126,7 +132,14 @@ const ChildAttribute = ({ data, pid }) => {
           });
         }
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        setLoader(false);
+        swal({
+          title: "Something went wrong",
+          timer: 2500,
+          icon: "error",
+        });
+      });
   };
 
   useEffect(() => {
