@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import MultipleValueTextInput from "react-multivalue-text-input";
 import {
@@ -15,8 +15,11 @@ import Button from "@material-ui/core/Button";
 import ReactQuill from "react-quill";
 import "./product.style.css";
 import { reloadSetTime } from "../../utility/Service";
+import { MainContext } from "../../context/MainContext";
 
+var gender = null;
 const ProductEdit = () => {
+  const { setLoader } = useContext(MainContext);
   const { id } = useParams();
   const [modal, setModal] = useState(false);
   const [data, setData] = useState({
@@ -24,29 +27,34 @@ const ProductEdit = () => {
     title: "",
     description: "",
     keywords: "",
+    gender: null,
   });
   const [images, setImages] = useState([]);
   const [bullet, setBullet] = useState([]);
   const [keywords, setKeywords] = useState([]);
   const [isEdit, setEdit] = useState(false);
   const [editImageId, setImageEditId] = useState(null);
-
+  const [gender, setGender] = useState(["Male", "Female"]);
   const onChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
   const onSubmit = () => {
-    let key = data.keywords;
+    setLoader(true);
+    var key = "";
+    if (data?.keywords.length > 0) {
+      key = data?.keywords?.join();
+    }
     delete data.keywords;
-    let body = { ...data, keywords: key.join() };
-    editProduct(data.id, body)
+    let body = { ...data, keywords: key , id : id};
+    editProduct(body)
       .then((res) => {
+        setLoader(false);
         if (res && res.data) {
           swal({ title: "Edit successfully!", timer: 2500, icon: "success" });
         }
-        console.log("res in edit: ", res);
       })
-      .catch((e) => console.log(e));
+      .catch((e) => setLoader(false));
   };
   const toggle = (id) => {
     setImageEditId(id);
@@ -76,7 +84,6 @@ const ProductEdit = () => {
   };
   const onAddKeyword = (item, list) => {
     setData({ ...data, keywords: list });
-    // console.log("list: ",list);
   };
   const onChangeBullet = (e, index) => {
     let array = [...bullet];
@@ -107,25 +114,28 @@ const ProductEdit = () => {
   const onChangeDesc = (value) => {
     setData({ ...data, description: value });
   };
+  const onChangeGender = (e) => {
+    setData({ ...data, gender: e });
+  };
 
   useEffect(() => {
     if (id) {
+      setLoader(true);
       getProductDetailById(id)
         .then((res) => {
+          setLoader(false);
           if (res.data && res.data.statusCode == 1) {
             let keyword = res.data.data.keywords
               ? res.data.data.keywords.split(",")
               : [];
-
             setKeywords(keyword);
-            console.log("keyword: ", keyword);
             setData({
               id: id,
-              title: res.data.data.title,
-              description: res.data.data.description,
+              title: res?.data?.data?.title,
+              description: res?.data?.data?.description,
               keywords: keyword,
+              gender: res.data.data.gender,
             });
-
             let array = res.data.data.imageList.map((m) => {
               return {
                 ...m,
@@ -143,9 +153,9 @@ const ProductEdit = () => {
             setBullet(res.data.data);
           }
         })
-        .catch((e) => console.log(e));
+        .catch((e) => setLoader(false));
     }
-  }, [id ]);
+  }, [id]);
 
   return (
     <div className="card p-3">
@@ -161,7 +171,7 @@ const ProductEdit = () => {
           <Input
             label="Enter title"
             onChange={onChange}
-            value={data.title}
+            value={data.title ? data.title : null}
             name="title"
             placeholder="Enter title"
           />
@@ -169,14 +179,25 @@ const ProductEdit = () => {
         <Col md="6" sm="12">
           <Label>Enter description</Label>
           <ReactQuill value={data.description} onChange={onChangeDesc} />
-          {/* <Input
-            type="textarea"
-            label="Enter title"
-            onChange={onChange}
-            value={data.description}
-            name="description"
-            placeholder="Enter title"
-          /> */}
+        </Col>
+        <Col md={6} sm={12} className="mb-2">
+          <label>Select Gender</label>
+          {gender.map((m, i) => (
+            <div class="form-check" key={i}>
+              <input
+                class="form-check-input"
+                type="radio"
+                name="flexRadioDefault"
+                id="flexRadioDefault1"
+                onChange={() => onChangeGender(m)}
+                checked={data.gender === m ? true : false}
+                // checked={data.gender == "Male" ? true : false}
+              />
+              <label class="form-check-label" for="flexRadioDefault1">
+                {m}
+              </label>
+            </div>
+          ))}
         </Col>
         {keywords.length ? (
           <Col lg={12} md={12} sm={12}>
@@ -222,7 +243,7 @@ const ProductEdit = () => {
                   </Col>
 
                   <Col md={3} sm={12}>
-                    <ButtonR color="danger" onClick={() => onUpdateBullet(m)}>
+                    <ButtonR color="primary" onClick={() => onUpdateBullet(m)}>
                       UPDATE BULLETE
                     </ButtonR>
                   </Col>

@@ -83,7 +83,6 @@ const SetPrice = () => {
   };
   const onChangeDiscountAll = () => {
     setData({ ...data, discount: !data.discount });
-
     priceList.map((m) => {
       m.discount = !data.discount;
     });

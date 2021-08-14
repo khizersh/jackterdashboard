@@ -24,6 +24,7 @@ const ProductForm = () => {
     title: "",
     description: "",
     categoryId: null,
+    gender:null
   });
   const [imageList, setImageList] = useState([]);
   const [parentCategory, setParentCategory] = useState([]);
@@ -65,7 +66,7 @@ const ProductForm = () => {
         icon: "error",
         timer: 2500,
       });
-    }else{
+    } else {
       setKeyword(itemList.join());
     }
   };
@@ -333,15 +334,7 @@ const ProductForm = () => {
     setMultipeView(true);
   };
   const onChangeDesc = (value) => {
-    if (value.length > 230) {
-      return swal({
-        title: "Description maximum length is 230 char",
-        icon: "error",
-        timer: 2500,
-      });
-    }else{
-      setData({ ...data, description: value });
-    }
+    setData({ ...data, description: value });
   };
 
   const onClickAttributeImage = (e, obj) => {
@@ -359,6 +352,9 @@ const ProductForm = () => {
   const onIncreaseBullet = () => {
     setBullet([...bullet, { point: "", productId: null }]);
   };
+  const onChangeGender = (e) => {
+    setData({...data , gender : e.target.value})
+  };
   const onChangeBullet = (value) => {
     if (value.length > 230) {
       return swal({
@@ -366,14 +362,13 @@ const ProductForm = () => {
         icon: "error",
         timer: 2500,
       });
-    }else{
+    } else {
       let body = {
         point: value,
         productId: null,
       };
       setBullet([body]);
     }
-  
   };
   //  on load
   useEffect(() => {
@@ -421,8 +416,39 @@ const ProductForm = () => {
           />
         </Col>
         <Col md={6} sm={12}>
-          <label>Product description (Description maximum length is 230 char)</label>
+          <label>
+            Product description 
+          </label>
           <ReactQuill value={data.description} onChange={onChangeDesc} />
+        </Col>
+        <Col md={6} sm={12}>
+          <label>Select Gender</label>
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="flexRadioDefault"
+              id="flexRadioDefault1"
+              onChange={onChangeGender}
+              value="Male"
+            />
+            <label class="form-check-label" for="flexRadioDefault1">
+              Male
+            </label>
+          </div>
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="flexRadioDefault"
+              id="flexRadioDefault2"
+              onChange={onChangeGender}
+              value="Female"
+            />
+            <label class="form-check-label" for="flexRadioDefault2">
+              Female
+            </label>
+          </div>
         </Col>
         <Col className="mt-4" lg={12} md={12} sm={12}>
           <MultipleValueTextInput
@@ -439,7 +465,9 @@ const ProductForm = () => {
         </Col>
         <Col md={12} sm={12} className="my-3">
           <div>
-            <label>Bullet Points (Bullet points maximum length is 230 char)</label>
+            <label>
+              Bullet Points (Bullet points maximum length is 230 char)
+            </label>
             {/* <button
               className="btn btn-danger float-right my-1"
               onClick={onIncreaseBullet}

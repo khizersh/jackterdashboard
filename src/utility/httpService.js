@@ -144,8 +144,8 @@ export const deleteProductById = async (id) => {
   return await deletee(Product, id);
 };
 
-export const editProduct = async (id, body) => {
-  return await edit(Product, id, body);
+export const editProduct = async (body) => {
+  return await post(Product + "/update" , body);
 };
 
 export const addProduct = async (body) => {
