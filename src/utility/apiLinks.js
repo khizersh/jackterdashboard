@@ -1,6 +1,6 @@
 // export const BaseURL = "https://jackter.herokuapp.com/"
 // export const BaseURL = "http://localhost:9999/"
-export const BaseURL = "http://147.182.178.140:9999/"
+export const BaseURL = "https://147.182.178.140:8443/"
 
 
 export const ParentCategory = BaseURL + "api/parentCategory"
